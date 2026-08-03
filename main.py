@@ -1,64 +1,43 @@
-from datetime import datetime
-from fastapi.responses import HTMLResponse
 import os
-from typing import List, Optional
-from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.middleware.cors import CORSMiddleware
+from typing import List
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from fastapi.staticfiles import StaticFiles
 
 import models
 import schemas
-from database import Base, engine, get_db
+from database import engine, get_db
 
-# Crear tablas automáticamente
-Base.metadata.create_all(bind=engine)
+# Crear las tablas en la base de datos automáticamente
+models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="API Sistema de Inventario Brindes MKT")
+app = FastAPI(title="Control de Stock - Brindes MKT")
 
-# Configuración de CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# RUTA PRINCIPAL - Servir la interfaz HTML directamente
+@app.get("/")
+def leer_frontend():
+    ruta_html = os.path.join(os.path.dirname(__file__), "index.html")
+    if os.path.exists(ruta_html):
+        return FileResponse(ruta_html)
+    return HTMLResponse("<h2>Error: No se encontró index.html en el servidor.</h2>")
 
+# --- ENDPOINTS API PRODUCTOS ---
 
-# 1. Obtener lista de productos
 @app.get("/api/productos", response_model=List[schemas.ProductoOut])
-def listar_productos(buscar: Optional[str] = None, db: Session = Depends(get_db)):
-    query = db.query(models.Producto)
-    if buscar:
-        query = query.filter(
-            (models.Producto.nombre.ilike(f"%{buscar}%"))
-            | (models.Producto.sku.ilike(f"%{buscar}%"))
-        )
-    productos = query.order_by(models.Producto.nombre.asc()).all()
-
+def obtener_productos(db: Session = Depends(get_db)):
+    productos = db.query(models.Producto).all()
     resultado = []
-    for p in productos:
-        prod_dict = schemas.ProductoOut.model_validate(p)
-        prod_dict.alerta_stock_bajo = p.stock_actual <= p.stock_minimo
-        resultado.append(prod_dict)
+    for prod in productos:
+        prod_out = schemas.ProductoOut.model_validate(prod)
+        prod_out.alerta_stock_bajo = prod.stock_actual <= prod.stock_minimo
+        resultado.append(prod_out)
     return resultado
 
-
-# 2. Crear un nuevo producto
-@app.post(
-    "/api/productos",
-    response_model=schemas.ProductoOut,
-    status_code=status.HTTP_201_CREATED,
-)
+@app.post("/api/productos", response_model=schemas.ProductoOut, status_code=status.HTTP_201_CREATED)
 def crear_producto(producto: schemas.ProductoCreate, db: Session = Depends(get_db)):
-    db_sku = (
-        db.query(models.Producto).filter(models.Producto.sku == producto.sku).first()
-    )
+    db_sku = db.query(models.Producto).filter(models.Producto.sku == producto.sku).first()
     if db_sku:
-        raise HTTPException(
-            status_code=400, detail="Ya existe un producto con este SKU."
-        )
+        raise HTTPException(status_code=400, detail="Ya existe un producto con este SKU.")
 
     nuevo_producto = models.Producto(
         sku=producto.sku,
@@ -67,109 +46,37 @@ def crear_producto(producto: schemas.ProductoCreate, db: Session = Depends(get_d
         imagen_url=producto.imagen_url,
         categoria_id=producto.categoria_id,
         stock_actual=producto.stock_inicial,
-        stock_minimo=producto.stock_minimo,
+        stock_minimo=producto.stock_minimo
     )
     db.add(nuevo_producto)
     db.commit()
     db.refresh(nuevo_producto)
 
     prod_out = schemas.ProductoOut.model_validate(nuevo_producto)
-    prod_out.alerta_stock_bajo = (
-        nuevo_producto.stock_actual <= nuevo_producto.stock_minimo
-    )
+    prod_out.alerta_stock_bajo = nuevo_producto.stock_actual <= nuevo_producto.stock_minimo
     return prod_out
 
-
-# 3. Registrar Entrada o Salida con USUARIO
-@app.post(
-    "/api/movimientos",
-    response_model=schemas.MovimientoOut,
-    status_code=status.HTTP_201_CREATED,
-)
-def registrar_movimiento(
-    movimiento: schemas.MovimientoCreate, db: Session = Depends(get_db)
-):
-    producto = (
-        db.query(models.Producto)
-        .filter(models.Producto.id == movimiento.producto_id)
-        .first()
-    )
-
+@app.post("/api/movimientos", status_code=status.HTTP_201_CREATED)
+def registrar_movimiento(movimiento: schemas.MovimientoCreate, db: Session = Depends(get_db)):
+    producto = db.query(models.Producto).filter(models.Producto.id == movimiento.producto_id).first()
     if not producto:
-        raise HTTPException(
-            status_code=404, detail="El producto especificado no existe."
-        )
+        raise HTTPException(status_code=404, detail="Producto no encontrado.")
 
-    if (
-        movimiento.tipo_movimiento == "SALIDA"
-        and producto.stock_actual < movimiento.cantidad
-    ):
-        raise HTTPException(
-            status_code=400,
-            detail=f"Stock insuficiente. Stock actual: {producto.stock_actual}",
-        )
+    if movimiento.tipo == "SALIDA" and producto.stock_actual < movimiento.cantidad:
+        raise HTTPException(status_code=400, detail=f"Stock insuficiente. Stock actual: {producto.stock_actual}")
 
-    # Actualizar stock
-    if movimiento.tipo_movimiento == "ENTRADA":
+    if movimiento.tipo == "ENTRADA":
         producto.stock_actual += movimiento.cantidad
-    elif movimiento.tipo_movimiento == "SALIDA":
+    elif movimiento.tipo == "SALIDA":
         producto.stock_actual -= movimiento.cantidad
 
-    nuevo_movimiento = models.MovimientoInventario(
+    nuevo_mov = models.MovimientoInventario(
         producto_id=movimiento.producto_id,
-        tipo_movimiento=movimiento.tipo_movimiento,
+        tipo=movimiento.tipo,
         cantidad=movimiento.cantidad,
-        usuario=movimiento.usuario,  # 👈 Aquí guarda quién hizo el cambio
-        motivo=movimiento.motivo,
+        usuario=movimiento.usuario,
+        notas=movimiento.notas
     )
-
-    db.add(nuevo_movimiento)
+    db.add(nuevo_mov)
     db.commit()
-    db.refresh(nuevo_movimiento)
-    return nuevo_movimiento
-
-
-# 4. Consultar Historial de Movimientos
-@app.get("/api/movimientos", response_model=List[schemas.MovimientoOut])
-def listar_movimientos(db: Session = Depends(get_db)):
-    return (
-        db.query(models.MovimientoInventario)
-        .order_by(models.MovimientoInventario.fecha_movimiento.desc())
-        .all()
-    )
-
-
-# 5. Eliminar un producto
-@app.delete("/api/productos/{producto_id}", status_code=status.HTTP_204_NO_CONTENT)
-def eliminar_producto(producto_id: int, db: Session = Depends(get_db)):
-    producto = (
-        db.query(models.Producto)
-        .filter(models.Producto.id == producto_id)
-        .first()
-    )
-
-    if not producto:
-        raise HTTPException(
-            status_code=404, detail="El producto especificado no existe."
-        )
-
-    # Eliminar sus movimientos previos y luego el producto
-    db.query(models.MovimientoInventario).filter(
-        models.MovimientoInventario.producto_id == producto_id
-    ).delete()
-
-    db.delete(producto)
-    db.commit()
-    return None
-
-# Permitir que FastAPI sirva archivos locales como imágenes
-app.mount("/static", StaticFiles(directory="."), name="static")
-
-from fastapi.responses import HTMLResponse
-
-@app.get("/", response_class=HTMLResponse)
-def leer_frontend():
-    if os.path.exists("index.html"):
-        with open("index.html", "r", encoding="utf-8") as f:
-            return f.read()
-    return "<h1>Error: No se encontró el archivo index.html</h1>"
+    return {"mensaje": "Movimiento registrado con éxito", "nuevo_stock": producto.stock_actual}
