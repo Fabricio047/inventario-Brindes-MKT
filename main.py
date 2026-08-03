@@ -8,6 +8,7 @@ import models
 import schemas
 from database import engine, get_db
 
+# Crear tablas automáticamente
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Control de Stock - Brindes MKT")
@@ -19,7 +20,7 @@ def leer_frontend():
         return FileResponse(ruta_html)
     return HTMLResponse("<h2>Error: No se encontró index.html en el servidor.</h2>")
 
-# --- PRODUCTOS ---
+# --- ENDPOINTS PRODUCTOS ---
 
 @app.get("/api/productos", response_model=List[schemas.ProductoOut])
 def obtener_productos(db: Session = Depends(get_db)):
@@ -35,7 +36,7 @@ def obtener_productos(db: Session = Depends(get_db)):
 def crear_producto(producto: schemas.ProductoCreate, db: Session = Depends(get_db)):
     db_sku = db.query(models.Producto).filter(models.Producto.sku == producto.sku).first()
     if db_sku:
-        raise HTTPException(status_code=400, detail="Ya existe un producto con este SKU.")
+        raise HTTPException(status_code=400, detail="Ya existe un producto registrado con este Código / SKU.")
 
     nuevo_producto = models.Producto(
         sku=producto.sku,
@@ -60,13 +61,12 @@ def eliminar_producto(producto_id: int, db: Session = Depends(get_db)):
     if not producto:
         raise HTTPException(status_code=404, detail="Producto no encontrado.")
     
-    # Eliminar movimientos asociados si existen
     db.query(models.MovimientoInventario).filter(models.MovimientoInventario.producto_id == producto_id).delete()
     db.delete(producto)
     db.commit()
     return {"mensaje": "Producto eliminado exitosamente"}
 
-# --- MOVIMIENTOS ---
+# --- ENDPOINTS MOVIMIENTOS ---
 
 @app.get("/api/movimientos", response_model=List[schemas.MovimientoOut])
 def obtener_movimientos(db: Session = Depends(get_db)):
@@ -79,7 +79,7 @@ def registrar_movimiento(movimiento: schemas.MovimientoCreate, db: Session = Dep
         raise HTTPException(status_code=404, detail="Producto no encontrado.")
 
     if movimiento.tipo == "SALIDA" and producto.stock_actual < movimiento.cantidad:
-        raise HTTPException(status_code=400, detail=f"Stock insuficiente. Stock actual: {producto.stock_actual}")
+        raise HTTPException(status_code=400, detail=f"Stock insuficiente. Stock disponible: {producto.stock_actual}")
 
     if movimiento.tipo == "ENTRADA":
         producto.stock_actual += movimiento.cantidad
