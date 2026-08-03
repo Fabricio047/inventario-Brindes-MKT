@@ -352,6 +352,227 @@
         }
 
         cargarTodo();
-    </script>
-</body>
-</html>
+ 
+<script>
+    const API_URL = "";
+    let productoSeleccionadoId = null;
+    let tipoMovimientoSeleccionado = null;
+    let usuarioActual = localStorage.getItem('operador_nombre') || '';
+
+    if (!usuarioActual) {
+        registrarUsuario();
+    } else {
+        actualizarDisplayUsuario();
+    }
+
+    function registrarUsuario() {
+        const nuevo = prompt("Ingrese su nombre de usuario / operador:", usuarioActual || "");
+        if (nuevo && nuevo.trim() !== "") {
+            usuarioActual = nuevo.trim();
+            localStorage.setItem('operador_nombre', usuarioActual);
+            actualizarDisplayUsuario();
+        }
+    }
+
+    function actualizarDisplayUsuario() {
+        document.getElementById('nombre-usuario-display').innerText = usuarioActual || "NO REGISTRADO";
+    }
+
+    async function cargarTodo() {
+        await cargarProductos();
+        await cargarMovimientos();
+    }
+
+    async function cargarProductos() {
+        try {
+            const res = await fetch(`${API_URL}/api/productos`);
+            if (res.ok) {
+                const productos = await res.json();
+                renderizarProductos(productos);
+            }
+        } catch (err) { console.error("Error al cargar productos:", err); }
+    }
+
+    async function cargarMovimientos() {
+        try {
+            const res = await fetch(`${API_URL}/api/movimientos`);
+            if (res.ok) {
+                const movimientos = await res.json();
+                renderizarMovimientos(movimientos);
+            }
+        } catch (err) { console.error("Error al cargar movimientos:", err); }
+    }
+
+    function renderizarProductos(productos) {
+        const tbody = document.getElementById('tabla-productos');
+        document.getElementById('total-productos').innerText = `${productos.length} productos`;
+        tbody.innerHTML = '';
+
+        if (!productos || productos.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 text-xs">No hay productos en el inventario.</td></tr>`;
+            return;
+        }
+
+        productos.forEach(p => {
+            const alerta = p.alerta_stock_bajo 
+                ? `<span class="bg-red-50 text-red-600 border border-red-200 text-[11px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-triangle-exclamation"></i> Stock Bajo</span>`
+                : `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[11px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-check"></i> Normal</span>`;
+
+            const miniatura = p.imagen_url && p.imagen_url.trim() !== ""
+                ? `<img src="${p.imagen_url}" class="h-10 w-10 object-cover rounded-lg border border-slate-200" alt="${p.nombre}" onerror="this.onerror=null; this.src='https://via.placeholder.com/40?text=NP';">`
+                : `<div class="h-10 w-10 bg-slate-100 text-slate-400 rounded-lg flex items-center justify-center text-xs border border-slate-200"><i class="fa-solid fa-image"></i></div>`;
+
+            tbody.innerHTML += `
+                <tr class="hover:bg-slate-50/80 transition">
+                    <td class="p-4">${miniatura}</td>
+                    <td class="p-4 font-mono text-slate-500 font-medium">${p.sku}</td>
+                    <td class="p-4 font-semibold text-slate-800">${p.nombre}</td>
+                    <td class="p-4"><span class="text-base font-extrabold text-slate-800">${p.stock_actual}</span> <span class="text-xs text-slate-400">unid.</span></td>
+                    <td class="p-4">${alerta}</td>
+                    <td class="p-4 text-center">
+                        <div class="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                            <button onclick="abrirModal(${p.id}, 'ENTRADA')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">+ Entrada</button>
+                            <button onclick="abrirModal(${p.id}, 'SALIDA')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">- Salida</button>
+                            <button onclick="borrarProducto(${p.id}, '${p.nombre}')" class="text-slate-400 hover:text-red-500 p-1.5 rounded-lg transition" title="Borrar Producto"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function renderizarMovimientos(movimientos) {
+        const tbody = document.getElementById('tabla-movimientos');
+        tbody.innerHTML = '';
+
+        if (!movimientos || movimientos.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400 text-xs">No hay movimientos registrados.</td></tr>`;
+            return;
+        }
+
+        movimientos.forEach(m => {
+            const fechaStr = m.fecha ? new Date(m.fecha).toLocaleString('es-ES') : '-';
+            const tipoBadge = m.tipo === 'ENTRADA'
+                ? `<span class="bg-emerald-100 text-emerald-700 text-[11px] font-bold px-2 py-0.5 rounded-full">ENTRADA</span>`
+                : `<span class="bg-rose-100 text-rose-700 text-[11px] font-bold px-2 py-0.5 rounded-full">SALIDA</span>`;
+
+            tbody.innerHTML += `
+                <tr class="hover:bg-slate-50/80 transition text-xs">
+                    <td class="p-4 text-slate-500 font-mono">${fechaStr}</td>
+                    <td class="p-4">${tipoBadge}</td>
+                    <td class="p-4 font-bold text-slate-800">${m.cantidad} unid.</td>
+                    <td class="p-4 font-semibold text-slate-700">${m.usuario}</td>
+                    <td class="p-4 text-slate-500">${m.notas || '-'}</td>
+                </tr>
+            `;
+        });
+    }
+
+    function abrirModal(id, tipo) {
+        productoSeleccionadoId = id;
+        tipoMovimientoSeleccionado = tipo;
+        document.getElementById('modal-titulo').innerText = `Registrar ${tipo}`;
+        document.getElementById('modal-usuario').value = usuarioActual || '';
+        document.getElementById('modal-cantidad').value = 1;
+        document.getElementById('modal-notas').value = '';
+        document.getElementById('modal-movimiento').classList.remove('hidden');
+    }
+
+    function cerrarModal() {
+        document.getElementById('modal-movimiento').classList.add('hidden');
+    }
+
+    async function confirmarMovimiento() {
+        const usuarioInput = document.getElementById('modal-usuario').value.trim();
+        const cantidadInput = parseInt(document.getElementById('modal-cantidad').value);
+        const notasInput = document.getElementById('modal-notas').value.trim();
+
+        if (!usuarioInput) {
+            alert("Por favor ingresa el nombre de la persona responsable.");
+            return;
+        }
+
+        if (isNaN(cantidadInput) || cantidadInput <= 0) {
+            alert("Por favor ingresa una cantidad válida mayor a cero.");
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_URL}/api/movimientos`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    producto_id: productoSeleccionadoId,
+                    tipo: tipoMovimientoSeleccionado,
+                    cantidad: cantidadInput,
+                    usuario: usuarioInput,
+                    notas: notasInput
+                })
+            });
+
+            if (res.ok) {
+                cerrarModal();
+                await cargarTodo();
+            } else {
+                const err = await res.json();
+                alert("Atención: " + (err.detail || "No se pudo realizar el movimiento."));
+            }
+        } catch (error) {
+            alert("Ocurrió un error al comunicarse con el servidor.");
+            console.error(error);
+        }
+    }
+
+    async function crearProducto() {
+        const sku = document.getElementById('sku').value.trim();
+        const nombre = document.getElementById('nombre').value.trim();
+        const imagen_url = document.getElementById('imagen_url').value.trim();
+        const stock_inicial = parseInt(document.getElementById('stock').value) || 0;
+        const stock_minimo = parseInt(document.getElementById('minimo').value) || 0;
+
+        if (!sku || !nombre) {
+            alert("Por favor ingresa el Código SKU y el Nombre del producto.");
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_URL}/api/productos`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ sku, nombre, imagen_url, stock_inicial, stock_minimo })
+            });
+
+            if (res.ok) {
+                document.getElementById('sku').value = '';
+                document.getElementById('nombre').value = '';
+                document.getElementById('imagen_url').value = '';
+                document.getElementById('stock').value = '';
+                document.getElementById('minimo').value = '';
+                await cargarTodo();
+            } else {
+                const err = await res.json();
+                alert("Error: " + (err.detail || "No se pudo guardar el producto."));
+            }
+        } catch (e) {
+            alert("Error al comunicarse con el servidor.");
+        }
+    }
+
+    async function borrarProducto(id, nombre) {
+        if (confirm(`¿Estás seguro de eliminar el producto "${nombre}"? Esta acción borrará el registro de inventario y sus movimientos.`)) {
+            try {
+                const res = await fetch(`${API_URL}/api/productos/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    await cargarTodo();
+                } else {
+                    alert("No se pudo eliminar el producto.");
+                }
+            } catch (e) {
+                alert("Error al intentar eliminar.");
+            }
+        }
+    }
+
+    // Inicializar al cargar la página
+    cargarTodo();
+</script>
