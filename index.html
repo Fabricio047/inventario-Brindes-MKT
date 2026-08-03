@@ -4,22 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CONTROL DE STOCK DE BRINDES MKT</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
+    <style> body { font-family: 'Inter', sans-serif; } </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
 
-    <!-- BARRA SUPERIOR CLEAN & MINIMALISTA -->
-    <header class="bg-black text-white shadow-md sticky top-0 z-50 border-b border-neutral-800">
+    <!-- HEADER -->
+    <header class="bg-black text-white shadow-md sticky top-0 z-40 border-b border-neutral-800">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            
-            <!-- MARCA / LOGO -->
             <div class="flex items-center space-x-4">
                 <div class="flex items-center space-x-3">
                     <span class="bg-white text-black font-black text-xs px-2.5 py-1 rounded tracking-wider uppercase">LG</span>
@@ -33,26 +27,22 @@
                 </div>
             </div>
 
-            <!-- USUARIO (OPERADOR) -->
             <div class="flex items-center space-x-3">
                 <div class="flex items-center space-x-2 bg-neutral-900 border border-neutral-800 px-3.5 py-1.5 rounded-lg">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span id="nombre-usuario-display" class="font-bold text-xs uppercase tracking-wider text-slate-200">FABRICIO</span>
+                    <span id="nombre-usuario-display" class="font-bold text-xs uppercase tracking-wider text-slate-200">NO REGISTRADO</span>
                 </div>
-
-                <button onclick="cambiarUsuario()" class="text-xs text-neutral-400 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-neutral-900 transition flex items-center gap-1.5 border border-transparent hover:border-neutral-800" title="Cambiar Operador">
-                    <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
-                    <span class="hidden sm:inline">Cambiar</span>
+                <button onclick="registrarUsuario()" class="text-xs text-neutral-400 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-neutral-900 transition flex items-center gap-1.5 border border-transparent hover:border-neutral-800" title="Crear / Cambiar Usuario">
+                    <i class="fa-solid fa-user-plus text-[10px]"></i>
+                    <span class="hidden sm:inline">Usuario</span>
                 </button>
             </div>
-
         </div>
     </header>
 
-    <!-- CONTENIDO PRINCIPAL -->
     <main class="max-w-7xl mx-auto px-6 py-8">
         
-        <!-- FORMULARIO DE REGISTRO DE PRODUCTO -->
+        <!-- FORMULARIO NUEVO PRODUCTO -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
             <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
                 <i class="fa-solid fa-plus-circle text-slate-800"></i> Registrar Nuevo Producto
@@ -86,8 +76,8 @@
             </div>
         </div>
 
-        <!-- TABLA DE PRODUCTOS E INVENTARIO -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <!-- TABLA DE PRODUCTOS -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-8">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center flex-wrap gap-4">
                 <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
                     <i class="fa-solid fa-boxes-stacked text-slate-800"></i> Inventario de Productos
@@ -103,68 +93,129 @@
                             <th class="p-4">Producto</th>
                             <th class="p-4">Stock Actual</th>
                             <th class="p-4">Estado</th>
-                            <th class="p-4 text-center">Acción / Movimiento</th>
+                            <th class="p-4 text-center">Acciones / Movimiento</th>
                         </tr>
                     </thead>
-                    <tbody id="tabla-productos" class="divide-y divide-slate-100">
-                        <!-- Se llena dinámicamente -->
-                    </tbody>
+                    <tbody id="tabla-productos" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- HISTORIAL DE MOVIMIENTOS -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-100">
+                <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-slate-800"></i> Historial de Movimientos
+                </h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-50/50 text-slate-400 font-semibold text-xs uppercase border-b border-slate-100">
+                            <th class="p-4">Fecha / Hora</th>
+                            <th class="p-4">Tipo</th>
+                            <th class="p-4">Cantidad</th>
+                            <th class="p-4">Responsable</th>
+                            <th class="p-4">Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-movimientos" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
         </div>
 
     </main>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- MODAL PARA REGISTRAR MOVIMIENTO -->
+    <div id="modal-movimiento" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center hidden z-50">
+        <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
+            <h3 id="modal-titulo" class="text-lg font-bold text-slate-800 mb-4">Registrar Movimiento</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre de quien realiza el movimiento</label>
+                    <input id="modal-usuario" type="text" placeholder="Ej. Juan Pérez" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Cantidad</label>
+                    <input id="modal-cantidad" type="number" min="1" value="1" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Observación / Motivo</label>
+                    <textarea id="modal-notas" rows="2" placeholder="Ej. Retirado para evento de MKT" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button onclick="cerrarModal()" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700">Cancelar</button>
+                <button onclick="confirmarMovimiento()" class="bg-slate-900 hover:bg-black text-white font-medium text-xs px-5 py-2.5 rounded-xl shadow-md">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const API_URL = ""; // Cadena vacía para consultar dinámicamente al mismo servidor
-        let usuarioActual = localStorage.getItem('operador_nombre') || 'FABRICIO';
+        const API_URL = "";
+        let productoSeleccionadoId = null;
+        let tipoMovimientoSeleccionado = null;
+        let usuarioActual = localStorage.getItem('operador_nombre') || '';
 
-        document.getElementById('nombre-usuario-display').innerText = usuarioActual;
+        if (!usuarioActual) {
+            registrarUsuario();
+        } else {
+            actualizarDisplayUsuario();
+        }
 
-        function cambiarUsuario() {
-            const nuevo = prompt("Nombre del operador actual:", usuarioActual);
+        function registrarUsuario() {
+            const nuevo = prompt("Ingrese su nombre de usuario / operador:", usuarioActual || "");
             if (nuevo && nuevo.trim() !== "") {
-                usuarioActual = nuevo.trim().toUpperCase();
+                usuarioActual = nuevo.trim();
                 localStorage.setItem('operador_nombre', usuarioActual);
-                document.getElementById('nombre-usuario-display').innerText = usuarioActual;
+                actualizarDisplayUsuario();
             }
+        }
+
+        function actualizarDisplayUsuario() {
+            document.getElementById('nombre-usuario-display').innerText = usuarioActual || "NO REGISTRADO";
+        }
+
+        async function cargarTodo() {
+            await cargarProductos();
+            await cargarMovimientos();
         }
 
         async function cargarProductos() {
             try {
                 const res = await fetch(`${API_URL}/api/productos`);
                 const productos = await res.json();
-                renderizarTablaProductos(productos);
-            } catch (err) {
-                console.error("Error al cargar productos:", err);
-            }
+                renderizarProductos(productos);
+            } catch (err) { console.error(err); }
         }
 
-        function renderizarTablaProductos(productos) {
+        async function cargarMovimientos() {
+            try {
+                const res = await fetch(`${API_URL}/api/movimientos`);
+                const movimientos = await res.json();
+                renderizarMovimientos(movimientos);
+            } catch (err) { console.error(err); }
+        }
+
+        function renderizarProductos(productos) {
             const tbody = document.getElementById('tabla-productos');
-            const badgeTotal = document.getElementById('total-productos');
+            document.getElementById('total-productos').innerText = `${productos.length} productos`;
             tbody.innerHTML = '';
-            badgeTotal.innerText = `${productos.length} productos`;
 
             if (productos.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="p-8 text-center text-slate-400 text-xs">
-                            No hay productos registrados en el inventario.
-                        </td>
-                    </tr>
-                `;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 text-xs">No hay productos en el inventario.</td></tr>`;
                 return;
             }
 
             productos.forEach(p => {
                 const alerta = p.alerta_stock_bajo 
-                    ? `<span class="bg-red-50 text-red-600 border border-red-200 text-[11px] font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> Stock Bajo</span>`
-                    : `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[11px] font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-1"><i class="fa-solid fa-check"></i> Normal</span>`;
+                    ? `<span class="bg-red-50 text-red-600 border border-red-200 text-[11px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-triangle-exclamation"></i> Stock Bajo</span>`
+                    : `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[11px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-check"></i> Normal</span>`;
 
                 const miniatura = p.imagen_url && p.imagen_url.trim() !== ""
-                    ? `<img src="${p.imagen_url}" class="h-10 w-10 object-cover rounded-lg border border-slate-200" alt="${p.nombre}" onerror="this.onerror=null; this.src='https://via.placeholder.com/40?text=NP';">`
+                    ? `<img src="${p.imagen_url}" class="h-10 w-10 object-cover rounded-lg border border-slate-200" alt="${p.nombre}">`
                     : `<div class="h-10 w-10 bg-slate-100 text-slate-400 rounded-lg flex items-center justify-center text-xs border border-slate-200"><i class="fa-solid fa-image"></i></div>`;
 
                 tbody.innerHTML += `
@@ -176,17 +227,86 @@
                         <td class="p-4">${alerta}</td>
                         <td class="p-4 text-center">
                             <div class="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-                                <button onclick="registrarMovimiento(${p.id}, 'ENTRADA')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">
-                                    + Entrada
-                                </button>
-                                <button onclick="registrarMovimiento(${p.id}, 'SALIDA')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">
-                                    - Salida
-                                </button>
+                                <button onclick="abrirModal(${p.id}, 'ENTRADA')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">+ Entrada</button>
+                                <button onclick="abrirModal(${p.id}, 'SALIDA')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">- Salida</button>
+                                <button onclick="borrarProducto(${p.id}, '${p.nombre}')" class="text-slate-400 hover:text-red-500 p-1.5 rounded-lg transition" title="Borrar Producto"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>
                 `;
             });
+        }
+
+        function renderizarMovimientos(movimientos) {
+            const tbody = document.getElementById('tabla-movimientos');
+            tbody.innerHTML = '';
+
+            if (movimientos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400 text-xs">No hay movimientos registrados.</td></tr>`;
+                return;
+            }
+
+            movimientos.forEach(m => {
+                const fecha = new Date(m.fecha).toLocaleString();
+                const tipoBadge = m.tipo === 'ENTRADA'
+                    ? `<span class="bg-emerald-100 text-emerald-700 text-[11px] font-bold px-2 py-0.5 rounded-full">ENTRADA</span>`
+                    : `<span class="bg-rose-100 text-rose-700 text-[11px] font-bold px-2 py-0.5 rounded-full">SALIDA</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/80 transition text-xs">
+                        <td class="p-4 text-slate-500 font-mono">${fecha}</td>
+                        <td class="p-4">${tipoBadge}</td>
+                        <td class="p-4 font-bold text-slate-800">${m.cantidad} unid.</td>
+                        <td class="p-4 font-semibold text-slate-700">${m.usuario}</td>
+                        <td class="p-4 text-slate-500">${m.notas || '-'}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function abrirModal(id, tipo) {
+            productoSeleccionadoId = id;
+            tipoMovimientoSeleccionado = tipo;
+            document.getElementById('modal-titulo').innerText = `Registrar ${tipo}`;
+            document.getElementById('modal-usuario').value = usuarioActual;
+            document.getElementById('modal-cantidad').value = 1;
+            document.getElementById('modal-notas').value = '';
+            document.getElementById('modal-movimiento').classList.remove('hidden');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-movimiento').classList.add('hidden');
+        }
+
+        async function confirmarMovimiento() {
+            const usuario = document.getElementById('modal-usuario').value.trim();
+            const cantidad = parseInt(document.getElementById('modal-cantidad').value);
+            const notas = document.getElementById('modal-notas').value.trim();
+
+            if (!usuario || isNaN(cantidad) || cantidad <= 0) {
+                alert("Completa el nombre de quien retira/ingresa y una cantidad válida.");
+                return;
+            }
+
+            const res = await fetch(`${API_URL}/api/movimientos`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    producto_id: productoSeleccionadoId,
+                    tipo: tipoMovimientoSeleccionado,
+                    cantidad: cantidad,
+                    usuario: usuario,
+                    notas: notas
+                })
+            });
+
+            if (res.ok) {
+                cerrarModal();
+                cargarTodo();
+            } else {
+                const err = await res.json();
+                alert(err.detail || "Error en el movimiento.");
+            }
         }
 
         async function crearProducto() {
@@ -197,68 +317,41 @@
             const stock_minimo = parseInt(document.getElementById('minimo').value) || 0;
 
             if (!sku || !nombre) {
-                alert("Por favor completa al menos el SKU y el Nombre.");
+                alert("Ingresa SKU y Nombre del producto.");
                 return;
             }
 
-            try {
-                const res = await fetch(`${API_URL}/api/productos`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ sku, nombre, imagen_url, stock_inicial, stock_minimo })
-                });
+            const res = await fetch(`${API_URL}/api/productos`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ sku, nombre, imagen_url, stock_inicial, stock_minimo })
+            });
 
-                if (res.ok) {
-                    document.getElementById('sku').value = '';
-                    document.getElementById('nombre').value = '';
-                    document.getElementById('imagen_url').value = '';
-                    document.getElementById('stock').value = '';
-                    document.getElementById('minimo').value = '';
-                    cargarProductos();
-                } else {
-                    const err = await res.json();
-                    alert("Error: " + (err.detail || "No se pudo crear el producto."));
-                }
-            } catch (e) {
-                alert("Error de conexión al servidor.");
+            if (res.ok) {
+                document.getElementById('sku').value = '';
+                document.getElementById('nombre').value = '';
+                document.getElementById('imagen_url').value = '';
+                document.getElementById('stock').value = '';
+                document.getElementById('minimo').value = '';
+                cargarTodo();
+            } else {
+                const err = await res.json();
+                alert(err.detail);
             }
         }
 
-        async function registrarMovimiento(productoId, tipo) {
-            const cantStr = prompt(`Cantidad para ${tipo}:`, "1");
-            if (!cantStr) return;
-            const cantidad = parseInt(cantStr);
-            if (isNaN(cantidad) || cantidad <= 0) {
-                alert("Ingresa una cantidad válida.");
-                return;
-            }
-
-            try {
-                const res = await fetch(`${API_URL}/api/movimientos`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        producto_id: productoId,
-                        tipo: tipo,
-                        cantidad: cantidad,
-                        usuario: usuarioActual,
-                        notas: `Movimiento realizado por ${usuarioActual}`
-                    })
-                });
-
+        async function borrarProducto(id, nombre) {
+            if (confirm(`¿Estás seguro de que deseas eliminar "${nombre}"? Esta acción borra el producto y sus movimientos.`)) {
+                const res = await fetch(`${API_URL}/api/productos/${id}`, { method: 'DELETE' });
                 if (res.ok) {
-                    cargarProductos();
+                    cargarTodo();
                 } else {
-                    const err = await res.json();
-                    alert("Error: " + (err.detail || "Operación no realizada."));
+                    alert("No se pudo eliminar el producto.");
                 }
-            } catch (e) {
-                alert("Error al comunicarse con el servidor.");
             }
         }
 
-        // Cargar productos al iniciar
-        cargarProductos();
+        cargarTodo();
     </script>
 </body>
 </html>
