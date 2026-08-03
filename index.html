@@ -30,11 +30,11 @@
             <div class="flex items-center space-x-3">
                 <div class="flex items-center space-x-2 bg-neutral-900 border border-neutral-800 px-3.5 py-1.5 rounded-lg">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span id="nombre-usuario-display" class="font-bold text-xs uppercase tracking-wider text-slate-200">NO REGISTRADO</span>
+                    <span id="nombre-usuario-display" class="font-bold text-xs uppercase tracking-wider text-slate-200">OPERADOR</span>
                 </div>
                 <button onclick="registrarUsuario()" class="text-xs text-neutral-400 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-neutral-900 transition flex items-center gap-1.5 border border-transparent hover:border-neutral-800" title="Crear / Cambiar Usuario">
-                    <i class="fa-solid fa-user-plus text-[10px]"></i>
-                    <span class="hidden sm:inline">Usuario</span>
+                    <i class="fa-solid fa-user-gear text-[10px]"></i>
+                    <span class="hidden sm:inline">Operador</span>
                 </button>
             </div>
         </div>
@@ -49,7 +49,7 @@
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Código / SKU</label>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Código / SKU *</label>
                     <input id="sku" type="text" placeholder="Ej. PEN-001" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900 transition">
                 </div>
                 <div>
@@ -57,16 +57,16 @@
                     <input id="imagen_url" type="text" placeholder="https://..." class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900 transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre del producto</label>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre del producto *</label>
                     <input id="nombre" type="text" placeholder="Ej. Lápiz Brindes" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900 transition">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Stock Inicial</label>
-                    <input id="stock" type="number" placeholder="0" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900 transition">
+                    <input id="stock" type="number" placeholder="0" min="0" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900 transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Stock Mínimo</label>
-                    <input id="minimo" type="number" placeholder="5" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900 transition">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Stock Mínimo (Alerta)</label>
+                    <input id="minimo" type="number" placeholder="5" min="0" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900 transition">
                 </div>
             </div>
             <div class="mt-4 flex justify-end">
@@ -116,7 +116,7 @@
                             <th class="p-4">Tipo</th>
                             <th class="p-4">Cantidad</th>
                             <th class="p-4">Responsable</th>
-                            <th class="p-4">Observaciones</th>
+                            <th class="p-4">Observación</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-movimientos" class="divide-y divide-slate-100"></tbody>
@@ -126,18 +126,18 @@
 
     </main>
 
-    <!-- MODAL PARA REGISTRAR MOVIMIENTO -->
+    <!-- MODAL DE MOVIMIENTOS -->
     <div id="modal-movimiento" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center hidden z-50">
         <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
             <h3 id="modal-titulo" class="text-lg font-bold text-slate-800 mb-4">Registrar Movimiento</h3>
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre de quien realiza el movimiento</label>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre de la persona que retira / ingresa *</label>
                     <input id="modal-usuario" type="text" placeholder="Ej. Juan Pérez" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Cantidad</label>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Cantidad *</label>
                     <input id="modal-cantidad" type="number" min="1" value="1" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900">
                 </div>
                 <div>
@@ -157,16 +157,12 @@
         const API_URL = "";
         let productoSeleccionadoId = null;
         let tipoMovimientoSeleccionado = null;
-        let usuarioActual = localStorage.getItem('operador_nombre') || '';
+        let usuarioActual = localStorage.getItem('operador_nombre') || 'FABRICIO';
 
-        if (!usuarioActual) {
-            registrarUsuario();
-        } else {
-            actualizarDisplayUsuario();
-        }
+        actualizarDisplayUsuario();
 
         function registrarUsuario() {
-            const nuevo = prompt("Ingrese su nombre de usuario / operador:", usuarioActual || "");
+            const nuevo = prompt("Nombre del usuario / operador actual:", usuarioActual);
             if (nuevo && nuevo.trim() !== "") {
                 usuarioActual = nuevo.trim();
                 localStorage.setItem('operador_nombre', usuarioActual);
@@ -175,7 +171,7 @@
         }
 
         function actualizarDisplayUsuario() {
-            document.getElementById('nombre-usuario-display').innerText = usuarioActual || "NO REGISTRADO";
+            document.getElementById('nombre-usuario-display').innerText = usuarioActual;
         }
 
         async function cargarTodo() {
@@ -186,17 +182,21 @@
         async function cargarProductos() {
             try {
                 const res = await fetch(`${API_URL}/api/productos`);
-                const productos = await res.json();
-                renderizarProductos(productos);
-            } catch (err) { console.error(err); }
+                if (res.ok) {
+                    const productos = await res.json();
+                    renderizarProductos(productos);
+                }
+            } catch (err) { console.error("Error productos:", err); }
         }
 
         async function cargarMovimientos() {
             try {
                 const res = await fetch(`${API_URL}/api/movimientos`);
-                const movimientos = await res.json();
-                renderizarMovimientos(movimientos);
-            } catch (err) { console.error(err); }
+                if (res.ok) {
+                    const movimientos = await res.json();
+                    renderizarMovimientos(movimientos);
+                }
+            } catch (err) { console.error("Error movimientos:", err); }
         }
 
         function renderizarProductos(productos) {
@@ -204,7 +204,7 @@
             document.getElementById('total-productos').innerText = `${productos.length} productos`;
             tbody.innerHTML = '';
 
-            if (productos.length === 0) {
+            if (!productos || productos.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 text-xs">No hay productos en el inventario.</td></tr>`;
                 return;
             }
@@ -215,7 +215,7 @@
                     : `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[11px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-check"></i> Normal</span>`;
 
                 const miniatura = p.imagen_url && p.imagen_url.trim() !== ""
-                    ? `<img src="${p.imagen_url}" class="h-10 w-10 object-cover rounded-lg border border-slate-200" alt="${p.nombre}">`
+                    ? `<img src="${p.imagen_url}" class="h-10 w-10 object-cover rounded-lg border border-slate-200" alt="${p.nombre}" onerror="this.onerror=null; this.src='https://via.placeholder.com/40?text=NP';">`
                     : `<div class="h-10 w-10 bg-slate-100 text-slate-400 rounded-lg flex items-center justify-center text-xs border border-slate-200"><i class="fa-solid fa-image"></i></div>`;
 
                 tbody.innerHTML += `
@@ -241,20 +241,20 @@
             const tbody = document.getElementById('tabla-movimientos');
             tbody.innerHTML = '';
 
-            if (movimientos.length === 0) {
+            if (!movimientos || movimientos.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400 text-xs">No hay movimientos registrados.</td></tr>`;
                 return;
             }
 
             movimientos.forEach(m => {
-                const fecha = new Date(m.fecha).toLocaleString();
+                const fechaStr = m.fecha ? new Date(m.fecha).toLocaleString('es-ES') : '-';
                 const tipoBadge = m.tipo === 'ENTRADA'
                     ? `<span class="bg-emerald-100 text-emerald-700 text-[11px] font-bold px-2 py-0.5 rounded-full">ENTRADA</span>`
                     : `<span class="bg-rose-100 text-rose-700 text-[11px] font-bold px-2 py-0.5 rounded-full">SALIDA</span>`;
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/80 transition text-xs">
-                        <td class="p-4 text-slate-500 font-mono">${fecha}</td>
+                        <td class="p-4 text-slate-500 font-mono">${fechaStr}</td>
                         <td class="p-4">${tipoBadge}</td>
                         <td class="p-4 font-bold text-slate-800">${m.cantidad} unid.</td>
                         <td class="p-4 font-semibold text-slate-700">${m.usuario}</td>
@@ -268,7 +268,7 @@
             productoSeleccionadoId = id;
             tipoMovimientoSeleccionado = tipo;
             document.getElementById('modal-titulo').innerText = `Registrar ${tipo}`;
-            document.getElementById('modal-usuario').value = usuarioActual;
+            document.getElementById('modal-usuario').value = usuarioActual || '';
             document.getElementById('modal-cantidad').value = 1;
             document.getElementById('modal-notas').value = '';
             document.getElementById('modal-movimiento').classList.remove('hidden');
@@ -279,300 +279,102 @@
         }
 
         async function confirmarMovimiento() {
-            const usuario = document.getElementById('modal-usuario').value.trim();
-            const cantidad = parseInt(document.getElementById('modal-cantidad').value);
-            const notas = document.getElementById('modal-notas').value.trim();
+            const usuarioInput = document.getElementById('modal-usuario').value.trim();
+            const cantidadInput = parseInt(document.getElementById('modal-cantidad').value);
+            const notasInput = document.getElementById('modal-notas').value.trim();
 
-            if (!usuario || isNaN(cantidad) || cantidad <= 0) {
-                alert("Completa el nombre de quien retira/ingresa y una cantidad válida.");
+            if (!usuarioInput) {
+                alert("Por favor ingresa el nombre del responsable.");
                 return;
             }
 
-            const res = await fetch(`${API_URL}/api/movimientos`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    producto_id: productoSeleccionadoId,
-                    tipo: tipoMovimientoSeleccionado,
-                    cantidad: cantidad,
-                    usuario: usuario,
-                    notas: notas
-                })
-            });
+            if (isNaN(cantidadInput) || cantidadInput <= 0) {
+                alert("Ingresa una cantidad mayor a cero.");
+                return;
+            }
 
-            if (res.ok) {
-                cerrarModal();
-                cargarTodo();
-            } else {
-                const err = await res.json();
-                alert(err.detail || "Error en el movimiento.");
+            try {
+                const res = await fetch(`${API_URL}/api/movimientos`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        producto_id: productoSeleccionadoId,
+                        tipo: tipoMovimientoSeleccionado,
+                        cantidad: cantidadInput,
+                        usuario: usuarioInput,
+                        notas: notasInput
+                    })
+                });
+
+                if (res.ok) {
+                    cerrarModal();
+                    await cargarTodo();
+                } else {
+                    const err = await res.json();
+                    alert("Atención: " + (err.detail || "No se pudo realizar la operación."));
+                }
+            } catch (error) {
+                alert("Error de conexión al servidor.");
             }
         }
 
         async function crearProducto() {
-            const sku = document.getElementById('sku').value;
-            const nombre = document.getElementById('nombre').value;
-            const imagen_url = document.getElementById('imagen_url').value;
+            const sku = document.getElementById('sku').value.trim();
+            const nombre = document.getElementById('nombre').value.trim();
+            const imagen_url = document.getElementById('imagen_url').value.trim();
             const stock_inicial = parseInt(document.getElementById('stock').value) || 0;
             const stock_minimo = parseInt(document.getElementById('minimo').value) || 0;
 
             if (!sku || !nombre) {
-                alert("Ingresa SKU y Nombre del producto.");
+                alert("Por favor completa el Código / SKU y el Nombre del producto.");
                 return;
             }
 
-            const res = await fetch(`${API_URL}/api/productos`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ sku, nombre, imagen_url, stock_inicial, stock_minimo })
-            });
+            try {
+                const res = await fetch(`${API_URL}/api/productos`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        sku: sku,
+                        nombre: nombre,
+                        imagen_url: imagen_url,
+                        stock_inicial: stock_inicial,
+                        stock_minimo: stock_minimo
+                    })
+                });
 
-            if (res.ok) {
-                document.getElementById('sku').value = '';
-                document.getElementById('nombre').value = '';
-                document.getElementById('imagen_url').value = '';
-                document.getElementById('stock').value = '';
-                document.getElementById('minimo').value = '';
-                cargarTodo();
-            } else {
-                const err = await res.json();
-                alert(err.detail);
+                if (res.ok) {
+                    document.getElementById('sku').value = '';
+                    document.getElementById('nombre').value = '';
+                    document.getElementById('imagen_url').value = '';
+                    document.getElementById('stock').value = '';
+                    document.getElementById('minimo').value = '';
+                    await cargarTodo();
+                } else {
+                    const err = await res.json();
+                    alert("Error: " + (err.detail || "No se pudo guardar el producto."));
+                }
+            } catch (e) {
+                alert("Error de red al servidor.");
             }
         }
 
         async function borrarProducto(id, nombre) {
-            if (confirm(`¿Estás seguro de que deseas eliminar "${nombre}"? Esta acción borra el producto y sus movimientos.`)) {
-                const res = await fetch(`${API_URL}/api/productos/${id}`, { method: 'DELETE' });
-                if (res.ok) {
-                    cargarTodo();
-                } else {
-                    alert("No se pudo eliminar el producto.");
+            if (confirm(`¿Deseas eliminar "${nombre}"? Esta acción borrará el producto y sus movimientos.`)) {
+                try {
+                    const res = await fetch(`${API_URL}/api/productos/${id}`, { method: 'DELETE' });
+                    if (res.ok) {
+                        await cargarTodo();
+                    } else {
+                        alert("No se pudo eliminar el producto.");
+                    }
+                } catch (e) {
+                    alert("Error al intentar eliminar.");
                 }
             }
         }
 
         cargarTodo();
- 
-<script>
-    const API_URL = "";
-    let productoSeleccionadoId = null;
-    let tipoMovimientoSeleccionado = null;
-    let usuarioActual = localStorage.getItem('operador_nombre') || '';
-
-    if (!usuarioActual) {
-        registrarUsuario();
-    } else {
-        actualizarDisplayUsuario();
-    }
-
-    function registrarUsuario() {
-        const nuevo = prompt("Ingrese su nombre de usuario / operador:", usuarioActual || "");
-        if (nuevo && nuevo.trim() !== "") {
-            usuarioActual = nuevo.trim();
-            localStorage.setItem('operador_nombre', usuarioActual);
-            actualizarDisplayUsuario();
-        }
-    }
-
-    function actualizarDisplayUsuario() {
-        document.getElementById('nombre-usuario-display').innerText = usuarioActual || "NO REGISTRADO";
-    }
-
-    async function cargarTodo() {
-        await cargarProductos();
-        await cargarMovimientos();
-    }
-
-    async function cargarProductos() {
-        try {
-            const res = await fetch(`${API_URL}/api/productos`);
-            if (res.ok) {
-                const productos = await res.json();
-                renderizarProductos(productos);
-            }
-        } catch (err) { console.error("Error al cargar productos:", err); }
-    }
-
-    async function cargarMovimientos() {
-        try {
-            const res = await fetch(`${API_URL}/api/movimientos`);
-            if (res.ok) {
-                const movimientos = await res.json();
-                renderizarMovimientos(movimientos);
-            }
-        } catch (err) { console.error("Error al cargar movimientos:", err); }
-    }
-
-    function renderizarProductos(productos) {
-        const tbody = document.getElementById('tabla-productos');
-        document.getElementById('total-productos').innerText = `${productos.length} productos`;
-        tbody.innerHTML = '';
-
-        if (!productos || productos.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 text-xs">No hay productos en el inventario.</td></tr>`;
-            return;
-        }
-
-        productos.forEach(p => {
-            const alerta = p.alerta_stock_bajo 
-                ? `<span class="bg-red-50 text-red-600 border border-red-200 text-[11px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-triangle-exclamation"></i> Stock Bajo</span>`
-                : `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[11px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-check"></i> Normal</span>`;
-
-            const miniatura = p.imagen_url && p.imagen_url.trim() !== ""
-                ? `<img src="${p.imagen_url}" class="h-10 w-10 object-cover rounded-lg border border-slate-200" alt="${p.nombre}" onerror="this.onerror=null; this.src='https://via.placeholder.com/40?text=NP';">`
-                : `<div class="h-10 w-10 bg-slate-100 text-slate-400 rounded-lg flex items-center justify-center text-xs border border-slate-200"><i class="fa-solid fa-image"></i></div>`;
-
-            tbody.innerHTML += `
-                <tr class="hover:bg-slate-50/80 transition">
-                    <td class="p-4">${miniatura}</td>
-                    <td class="p-4 font-mono text-slate-500 font-medium">${p.sku}</td>
-                    <td class="p-4 font-semibold text-slate-800">${p.nombre}</td>
-                    <td class="p-4"><span class="text-base font-extrabold text-slate-800">${p.stock_actual}</span> <span class="text-xs text-slate-400">unid.</span></td>
-                    <td class="p-4">${alerta}</td>
-                    <td class="p-4 text-center">
-                        <div class="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-                            <button onclick="abrirModal(${p.id}, 'ENTRADA')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">+ Entrada</button>
-                            <button onclick="abrirModal(${p.id}, 'SALIDA')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">- Salida</button>
-                            <button onclick="borrarProducto(${p.id}, '${p.nombre}')" class="text-slate-400 hover:text-red-500 p-1.5 rounded-lg transition" title="Borrar Producto"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        });
-    }
-
-    function renderizarMovimientos(movimientos) {
-        const tbody = document.getElementById('tabla-movimientos');
-        tbody.innerHTML = '';
-
-        if (!movimientos || movimientos.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400 text-xs">No hay movimientos registrados.</td></tr>`;
-            return;
-        }
-
-        movimientos.forEach(m => {
-            const fechaStr = m.fecha ? new Date(m.fecha).toLocaleString('es-ES') : '-';
-            const tipoBadge = m.tipo === 'ENTRADA'
-                ? `<span class="bg-emerald-100 text-emerald-700 text-[11px] font-bold px-2 py-0.5 rounded-full">ENTRADA</span>`
-                : `<span class="bg-rose-100 text-rose-700 text-[11px] font-bold px-2 py-0.5 rounded-full">SALIDA</span>`;
-
-            tbody.innerHTML += `
-                <tr class="hover:bg-slate-50/80 transition text-xs">
-                    <td class="p-4 text-slate-500 font-mono">${fechaStr}</td>
-                    <td class="p-4">${tipoBadge}</td>
-                    <td class="p-4 font-bold text-slate-800">${m.cantidad} unid.</td>
-                    <td class="p-4 font-semibold text-slate-700">${m.usuario}</td>
-                    <td class="p-4 text-slate-500">${m.notas || '-'}</td>
-                </tr>
-            `;
-        });
-    }
-
-    function abrirModal(id, tipo) {
-        productoSeleccionadoId = id;
-        tipoMovimientoSeleccionado = tipo;
-        document.getElementById('modal-titulo').innerText = `Registrar ${tipo}`;
-        document.getElementById('modal-usuario').value = usuarioActual || '';
-        document.getElementById('modal-cantidad').value = 1;
-        document.getElementById('modal-notas').value = '';
-        document.getElementById('modal-movimiento').classList.remove('hidden');
-    }
-
-    function cerrarModal() {
-        document.getElementById('modal-movimiento').classList.add('hidden');
-    }
-
-    async function confirmarMovimiento() {
-        const usuarioInput = document.getElementById('modal-usuario').value.trim();
-        const cantidadInput = parseInt(document.getElementById('modal-cantidad').value);
-        const notasInput = document.getElementById('modal-notas').value.trim();
-
-        if (!usuarioInput) {
-            alert("Por favor ingresa el nombre de la persona responsable.");
-            return;
-        }
-
-        if (isNaN(cantidadInput) || cantidadInput <= 0) {
-            alert("Por favor ingresa una cantidad válida mayor a cero.");
-            return;
-        }
-
-        try {
-            const res = await fetch(`${API_URL}/api/movimientos`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    producto_id: productoSeleccionadoId,
-                    tipo: tipoMovimientoSeleccionado,
-                    cantidad: cantidadInput,
-                    usuario: usuarioInput,
-                    notas: notasInput
-                })
-            });
-
-            if (res.ok) {
-                cerrarModal();
-                await cargarTodo();
-            } else {
-                const err = await res.json();
-                alert("Atención: " + (err.detail || "No se pudo realizar el movimiento."));
-            }
-        } catch (error) {
-            alert("Ocurrió un error al comunicarse con el servidor.");
-            console.error(error);
-        }
-    }
-
-    async function crearProducto() {
-        const sku = document.getElementById('sku').value.trim();
-        const nombre = document.getElementById('nombre').value.trim();
-        const imagen_url = document.getElementById('imagen_url').value.trim();
-        const stock_inicial = parseInt(document.getElementById('stock').value) || 0;
-        const stock_minimo = parseInt(document.getElementById('minimo').value) || 0;
-
-        if (!sku || !nombre) {
-            alert("Por favor ingresa el Código SKU y el Nombre del producto.");
-            return;
-        }
-
-        try {
-            const res = await fetch(`${API_URL}/api/productos`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ sku, nombre, imagen_url, stock_inicial, stock_minimo })
-            });
-
-            if (res.ok) {
-                document.getElementById('sku').value = '';
-                document.getElementById('nombre').value = '';
-                document.getElementById('imagen_url').value = '';
-                document.getElementById('stock').value = '';
-                document.getElementById('minimo').value = '';
-                await cargarTodo();
-            } else {
-                const err = await res.json();
-                alert("Error: " + (err.detail || "No se pudo guardar el producto."));
-            }
-        } catch (e) {
-            alert("Error al comunicarse con el servidor.");
-        }
-    }
-
-    async function borrarProducto(id, nombre) {
-        if (confirm(`¿Estás seguro de eliminar el producto "${nombre}"? Esta acción borrará el registro de inventario y sus movimientos.`)) {
-            try {
-                const res = await fetch(`${API_URL}/api/productos/${id}`, { method: 'DELETE' });
-                if (res.ok) {
-                    await cargarTodo();
-                } else {
-                    alert("No se pudo eliminar el producto.");
-                }
-            } catch (e) {
-                alert("Error al intentar eliminar.");
-            }
-        }
-    }
-
-    // Inicializar al cargar la página
-    cargarTodo();
-</script>
+    </script>
+</body>
+</html>
