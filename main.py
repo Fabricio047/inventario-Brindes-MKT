@@ -1,19 +1,17 @@
 import os
 from typing import List
 from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from sqlalchemy.orm import Session
 
 import models
 import schemas
 from database import engine, get_db
 
-# Crear las tablas en la base de datos automáticamente
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Control de Stock - Brindes MKT")
 
-# RUTA PRINCIPAL - Servir la interfaz HTML directamente
 @app.get("/")
 def leer_frontend():
     ruta_html = os.path.join(os.path.dirname(__file__), "index.html")
@@ -21,7 +19,7 @@ def leer_frontend():
         return FileResponse(ruta_html)
     return HTMLResponse("<h2>Error: No se encontró index.html en el servidor.</h2>")
 
-# --- ENDPOINTS API PRODUCTOS ---
+# --- PRODUCTOS ---
 
 @app.get("/api/productos", response_model=List[schemas.ProductoOut])
 def obtener_productos(db: Session = Depends(get_db)):
@@ -55,6 +53,24 @@ def crear_producto(producto: schemas.ProductoCreate, db: Session = Depends(get_d
     prod_out = schemas.ProductoOut.model_validate(nuevo_producto)
     prod_out.alerta_stock_bajo = nuevo_producto.stock_actual <= nuevo_producto.stock_minimo
     return prod_out
+
+@app.delete("/api/productos/{producto_id}", status_code=status.HTTP_200_OK)
+def eliminar_producto(producto_id: int, db: Session = Depends(get_db)):
+    producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
+    if not producto:
+        raise HTTPException(status_code=404, detail="Producto no encontrado.")
+    
+    # Eliminar movimientos asociados si existen
+    db.query(models.MovimientoInventario).filter(models.MovimientoInventario.producto_id == producto_id).delete()
+    db.delete(producto)
+    db.commit()
+    return {"mensaje": "Producto eliminado exitosamente"}
+
+# --- MOVIMIENTOS ---
+
+@app.get("/api/movimientos", response_model=List[schemas.MovimientoOut])
+def obtener_movimientos(db: Session = Depends(get_db)):
+    return db.query(models.MovimientoInventario).order_by(models.MovimientoInventario.fecha.desc()).limit(50).all()
 
 @app.post("/api/movimientos", status_code=status.HTTP_201_CREATED)
 def registrar_movimiento(movimiento: schemas.MovimientoCreate, db: Session = Depends(get_db)):
