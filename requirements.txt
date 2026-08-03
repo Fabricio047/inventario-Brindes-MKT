@@ -1,1 +1,4 @@
-requirements
+fastapi
+uvicorn
+sqlalchemy
+pydantic
