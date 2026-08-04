@@ -595,9 +595,15 @@
                     ? `<span class="bg-emerald-100 text-emerald-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">ENTRADA</span>`
                     : `<span class="bg-rose-100 text-rose-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">SALIDA</span>`;
 
-                const miniatura = m.producto_imagen && m.producto_imagen.trim() !== ""
-                    ? `<img src="${m.producto_imagen}" class="h-9 w-9 object-cover rounded-xl border border-slate-200 shadow-sm" alt="${m.producto_nombre}">`
-                    : `<div class="h-9 w-9 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center text-xs border border-slate-200"><i class="fa-solid fa-box"></i></div>`;
+            
+const miniatura = p.imagen_url && p.imagen_url.trim() !== ""
+    ? `<div class="relative group cursor-pointer" onclick="abrirZoomImagen('${p.imagen_url}', '${p.nombre}')" title="Haz clic para ampliar">
+        <img src="${p.imagen_url}" class="h-16 w-16 object-cover rounded-2xl border border-slate-200/90 shadow-sm bg-white p-0.5 group-hover:scale-105 group-hover:shadow-md transition duration-200" alt="${p.nombre}" onerror="this.onerror=null; this.src='https://via.placeholder.com/64?text=Foto';">
+        <div class="absolute inset-0 bg-black/30 rounded-2xl opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs">
+            <i class="fa-solid fa-magnifying-glass-plus"></i>
+        </div>
+       </div>`
+    : `<div class="h-16 w-16 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center text-lg border border-slate-200/90 shadow-inner"><i class="fa-solid fa-image"></i></div>`;iv class="h-9 w-9 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center text-xs border border-slate-200"><i class="fa-solid fa-box"></i></div>`;
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/80 transition text-xs">
