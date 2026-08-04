@@ -49,12 +49,12 @@
                 </button>
                 <div class="text-center pt-3 border-t border-slate-100">
                     <button onclick="mostrarCadastro()" class="text-xs text-slate-500 hover:text-slate-900 font-semibold transition">
-                        ¿No tienes acceso? <span class="text-indigo-600 underline">Crear cuenta nueva</span>
+                        ¿No tienes acceso? <span class="text-indigo-600 underline">Crear cuenta de Operador</span>
                     </button>
                 </div>
             </div>
 
-            <!-- REGISTRO -->
+            <!-- REGISTRO OPERADOR -->
             <div id="form-registro" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nombre Completo</label>
@@ -77,12 +77,8 @@
                         <input id="reg-pass" type="password" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
                     </div>
                 </div>
-                <div class="flex items-center gap-2 pt-1">
-                    <input id="reg-admin" type="checkbox" class="w-4 h-4 text-slate-900 rounded border-slate-300 focus:ring-slate-900">
-                    <label for="reg-admin" class="text-xs font-bold text-slate-700">Registrar como Usuario Administrador (ADMIN)</label>
-                </div>
                 <button onclick="ejecutarRegistro()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl text-sm shadow-lg shadow-emerald-600/10 transition active:scale-[0.98]">
-                    Registrar Cuenta
+                    Registrar Operador
                 </button>
                 <div class="text-center pt-3 border-t border-slate-100">
                     <button onclick="mostrarLogin()" class="text-xs text-slate-500 hover:text-slate-900 font-semibold transition">
@@ -154,7 +150,7 @@
                     <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
             </div>
-            <div id="kpi-box-movimientos" class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div id="kpi-box-movimientos" class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between hidden">
                 <div>
                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Movimientos</p>
                     <h3 id="kpi-total-movimientos" class="text-2xl font-black text-slate-900 mt-1">0</h3>
@@ -165,10 +161,10 @@
             </div>
         </div>
 
-        <!-- FORMULARIO CREAR PRODUCTO (Solo visible para ADMIN o Usuarios) -->
-        <div id="seccion-crear-producto" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80">
+        <!-- FORMULARIO CREAR PRODUCTO (EXCLUSIVO SOLO PARA ADMIN) -->
+        <div id="seccion-crear-producto" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 hidden">
             <h2 class="text-base font-extrabold text-slate-900 mb-5 flex items-center gap-2 tracking-tight">
-                <i class="fa-solid fa-plus-circle text-slate-900"></i> Registrar Nuevo Producto
+                <i class="fa-solid fa-plus-circle text-slate-900"></i> Registrar Nuevo Producto <span class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-md border border-indigo-200">Exclusivo Admin</span>
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
                 <div>
@@ -355,9 +351,12 @@
 
             if (usuarioSesion.rol === 'ADMIN') {
                 badgeRol.className = "text-[9px] font-black uppercase px-2 py-0.5 rounded-md bg-indigo-600 text-white shadow-sm";
+                document.getElementById('seccion-crear-producto').classList.remove('hidden');
                 document.getElementById('seccion-movimientos-admin').classList.remove('hidden');
+                document.getElementById('kpi-box-movimientos').classList.remove('hidden');
             } else {
                 badgeRol.className = "text-[9px] font-black uppercase px-2 py-0.5 rounded-md bg-slate-800 text-slate-300";
+                document.getElementById('seccion-crear-producto').classList.add('hidden');
                 document.getElementById('seccion-movimientos-admin').classList.add('hidden');
                 document.getElementById('kpi-box-movimientos').classList.add('hidden');
             }
@@ -401,7 +400,6 @@
             const nombre = document.getElementById('reg-nombre').value.trim();
             const email = document.getElementById('reg-email').value.trim();
             const password = document.getElementById('reg-pass').value.trim();
-            const es_admin = document.getElementById('reg-admin').checked;
 
             if (!nombre || !email || !password) {
                 alert("Completa todos los datos.");
@@ -412,11 +410,11 @@
                 const res = await fetch(`${API_URL}/api/registro`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ nombre, email, password, es_admin })
+                    body: JSON.stringify({ nombre, email, password })
                 });
 
                 if (res.ok) {
-                    alert("¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.");
+                    alert("¡Operador registrado exitosamente! Ahora puedes iniciar sesión.");
                     mostrarLogin();
                 } else {
                     const err = await res.json();
