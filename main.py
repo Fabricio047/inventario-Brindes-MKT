@@ -10,23 +10,20 @@ import models
 import schemas
 from database import engine, get_db
 
-# Configurar Cloudinary con tus datos
+# Configuración oficial de Cloudinary con tus claves
 cloudinary.config( 
   cloud_name = "uozsov2p", 
   api_key = "759287856464937", 
-  api_secret = "hiSNimBqxNAzCv1tdl3ua3IWkLc
-
-
-*",
+  api_secret = "hiSNimBqxNAzCv1tdl3ua3IWkLc",
   secure = True
 )
 
-# Crear tablas
+# Crear tablas en la base de datos
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Control de Stock - Brindes MKT")
 
-# Crear Admin por defecto al iniciar
+# Crear Administrador Maestro por defecto al iniciar
 def crear_admin_por_defecto():
     db = Session(bind=engine)
     try:
@@ -57,14 +54,13 @@ def leer_frontend():
 @app.post("/api/upload")
 async def subir_imagen(file: UploadFile = File(...)):
     try:
-        # Subida directa a la nube de Cloudinary
         respuesta = cloudinary.uploader.upload(
             file.file, 
             folder="brindes_mkt"
         )
         return {"imagen_url": respuesta.get("secure_url")}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al subir la imagen a la nube: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error al subir imagen a la nube: {str(e)}")
 
 # --- USUARIOS ---
 
