@@ -13,8 +13,8 @@ from database import engine, get_db
 # Configurar Cloudinary con tus datos
 cloudinary.config( 
   cloud_name = "uozsov2p", 
-  api_key = "TU_API_KEY", 
-  api_secret = "TU_API_SECRET",
+  api_key = "adminlgimportados@gmail.com", 
+  api_secret = "admin123*",
   secure = True
 )
 
