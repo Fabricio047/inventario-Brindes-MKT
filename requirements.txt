@@ -8,3 +8,5 @@ cloudinary
 bcrypt
 pyjwt
 psycopg2-binary
+pandas
+openpyxl
