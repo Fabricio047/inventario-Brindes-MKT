@@ -279,3 +279,32 @@ def editar_movimiento(movimiento_id: int, datos: schemas.MovimientoUpdate, db: S
         
     db.commit()
     return {"mensaje": "Movimiento actualizado con éxito"}
+
+import io
+import pandas as pd
+from fastapi.responses import StreamingResponse
+
+@app.get("/api/reportes/excel")
+def descargar_reporte_excel(db: Session = Depends(get_db), usuario: models.Usuario = Depends(obtener_usuario_actual)):
+    productos = db.query(models.Producto).all()
+    
+    data = []
+    for p in productos:
+        data.append({
+            "Código / SKU": p.sku,
+            "Producto": p.nombre,
+            "Stock Actual": p.stock_actual,
+            "Stock Mínimo": p.stock_minimo,
+            "Estado Stock": "ALERTA - BAJO" if p.stock_actual <= p.stock_minimo else "NORMAL",
+            "URL Imagen": p.imagen_url or "Sin foto"
+        })
+    
+    df = pd.DataFrame(data)
+    
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Inventario Brindes')
+    output.seek(0)
+    
+    headers = {'Content-Disposition': 'attachment; filename="Inventario_Brindes_MKT.xlsx"'}
+    return StreamingResponse(output, headers=headers, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
