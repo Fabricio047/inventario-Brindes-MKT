@@ -3,146 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONTROL DE STOCK DE BRINDES MKT</title>
+    <title>CONTROL DE STOCK DE BRINDES MKT - LG IMPORTADOS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Inter', sans-serif; } </style>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-header { background: rgba(10, 10, 10, 0.92); backdrop-filter: blur(12px); }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen">
+<body class="bg-slate-100/70 text-slate-800 min-h-screen antialiased selection:bg-slate-900 selection:text-white">
 
-    <!-- PANTALLA DE LOGIN / CADASTRO OBLIGATORIO -->
-    <div id="pantalla-auth" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 border border-slate-100">
-            <div class="text-center mb-6">
-                <div class="inline-flex items-center space-x-2 bg-black text-white px-3 py-1 rounded-lg mb-3">
-                    <span class="font-black text-xs">LG</span>
-                    <span class="text-xs tracking-widest font-bold">IMPORTADOS</span>
+    <!-- PANTALLA LOGIN / REGISTRO -->
+    <div id="pantalla-auth" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 border border-slate-100 relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900"></div>
+            
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center space-x-2 bg-slate-900 text-white px-3.5 py-1.5 rounded-xl mb-4 shadow-sm">
+                    <span class="font-black text-xs tracking-wider">LG</span>
+                    <span class="text-[11px] tracking-widest font-bold text-slate-300">IMPORTADOS</span>
                 </div>
-                <h2 class="text-xl font-bold text-slate-800">Control de Stock - Brindes MKT</h2>
-                <p class="text-xs text-slate-400 mt-1" id="auth-subtitulo">Ingrese sus credenciales para continuar</p>
+                <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Gestión de Inventario</h2>
+                <p class="text-xs font-medium text-slate-500 mt-1.5" id="auth-subtitulo">Brindes & Materiales MKT</p>
             </div>
 
-            <!-- FORMULARIO LOGIN -->
+            <!-- LOGIN -->
             <div id="form-login" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Correo Electrónico</label>
-                    <input id="login-email" type="email" placeholder="usuario@empresa.com" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5">Correo Electrónico</label>
+                    <div class="relative">
+                        <i class="fa-regular fa-envelope absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                        <input id="login-email" type="email" placeholder="usuario@empresa.com" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Contraseña</label>
-                    <input id="login-pass" type="password" placeholder="••••••••" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5">Contraseña</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                        <input id="login-pass" type="password" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                    </div>
                 </div>
-                <button onclick="ejecutarLogin()" class="w-full bg-slate-900 hover:bg-black text-white font-medium py-2.5 rounded-xl text-sm shadow-md transition">Entrar al Sistema</button>
-                <div class="text-center pt-2">
-                    <button onclick="mostrarCadastro()" class="text-xs text-slate-500 hover:text-slate-800 font-semibold">¿No tienes cuenta? Regístrate aquí</button>
+                <button onclick="ejecutarLogin()" class="w-full bg-slate-900 hover:bg-black text-white font-semibold py-3 rounded-xl text-sm shadow-lg shadow-slate-900/10 transition active:scale-[0.98]">
+                    Ingresar al Sistema
+                </button>
+                <div class="text-center pt-3 border-t border-slate-100">
+                    <button onclick="mostrarCadastro()" class="text-xs text-slate-500 hover:text-slate-900 font-semibold transition">
+                        ¿No tienes acceso? <span class="text-indigo-600 underline">Crear cuenta nueva</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- FORMULARIO REGISTRO -->
+            <!-- REGISTRO -->
             <div id="form-registro" class="space-y-4 hidden">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre Completo</label>
-                    <input id="reg-nombre" type="text" placeholder="Ej. Fabricio" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nombre Completo</label>
+                    <div class="relative">
+                        <i class="fa-regular fa-user absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                        <input id="reg-nombre" type="text" placeholder="Ej. Fabricio" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Correo Electrónico</label>
-                    <input id="reg-email" type="email" placeholder="usuario@empresa.com" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5">Correo Electrónico</label>
+                    <div class="relative">
+                        <i class="fa-regular fa-envelope absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                        <input id="reg-email" type="email" placeholder="usuario@empresa.com" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Contraseña</label>
-                    <input id="reg-pass" type="password" placeholder="••••••••" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5">Contraseña</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                        <input id="reg-pass" type="password" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                    </div>
                 </div>
-                <button onclick="ejecutarRegistro()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl text-sm shadow-md transition">Crear Cuenta</button>
-                <div class="text-center pt-2">
-                    <button onclick="mostrarLogin()" class="text-xs text-slate-500 hover:text-slate-800 font-semibold">¿Ya tienes cuenta? Inicia sesión</button>
+                <div class="flex items-center gap-2 pt-1">
+                    <input id="reg-admin" type="checkbox" class="w-4 h-4 text-slate-900 rounded border-slate-300 focus:ring-slate-900">
+                    <label for="reg-admin" class="text-xs font-bold text-slate-700">Registrar como Usuario Administrador (ADMIN)</label>
+                </div>
+                <button onclick="ejecutarRegistro()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl text-sm shadow-lg shadow-emerald-600/10 transition active:scale-[0.98]">
+                    Registrar Cuenta
+                </button>
+                <div class="text-center pt-3 border-t border-slate-100">
+                    <button onclick="mostrarLogin()" class="text-xs text-slate-500 hover:text-slate-900 font-semibold transition">
+                        ¿Ya tienes cuenta? <span class="text-indigo-600 underline">Iniciar Sesión</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- HEADER DE LA APLICACIÓN -->
-    <header class="bg-black text-white shadow-md sticky top-0 z-40 border-b border-neutral-800">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <!-- HEADER -->
+    <header class="glass-header text-white shadow-xl sticky top-0 z-40 border-b border-neutral-800/80">
+        <div class="max-w-7xl mx-auto px-6 py-3.5 flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                <div class="flex items-center space-x-3">
-                    <span class="bg-white text-black font-black text-xs px-2.5 py-1 rounded tracking-wider uppercase">LG</span>
-                    <span class="font-bold text-sm tracking-widest text-slate-200">IMPORTADOS</span>
+                <div class="flex items-center space-x-2.5">
+                    <span class="bg-white text-black font-black text-xs px-2.5 py-1 rounded-lg tracking-wider uppercase shadow-sm">LG</span>
+                    <span class="font-bold text-xs tracking-widest text-slate-300">IMPORTADOS</span>
                 </div>
-                <div class="h-5 w-px bg-neutral-800"></div>
+                <div class="h-4 w-px bg-neutral-800"></div>
                 <div>
-                    <h1 class="text-xs sm:text-sm font-bold uppercase tracking-widest text-slate-200">
-                        CONTROL DE STOCK DE BRINDES MKT
+                    <h1 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-100">
+                        CONTROL DE STOCK BRINDES MKT
                     </h1>
                 </div>
             </div>
 
             <div class="flex items-center space-x-3">
-                <div class="flex items-center space-x-2 bg-neutral-900 border border-neutral-800 px-3.5 py-1.5 rounded-lg">
+                <div class="flex items-center space-x-2 bg-neutral-900/90 border border-neutral-800 px-3.5 py-1.5 rounded-xl shadow-inner">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span id="nombre-usuario-display" class="font-bold text-xs uppercase tracking-wider text-slate-200">OPERADOR</span>
+                    <span id="badge-rol" class="text-[9px] font-black uppercase px-2 py-0.5 rounded-md bg-slate-800 text-slate-300">OPERADOR</span>
                 </div>
-                <button onclick="cerrarSesion()" class="text-xs text-neutral-400 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-neutral-900 transition flex items-center gap-1.5 border border-transparent hover:border-neutral-800" title="Cerrar Sesión">
-                    <i class="fa-solid fa-right-from-bracket text-[10px]"></i>
-                    <span class="hidden sm:inline">Salir</span>
+                <button onclick="cerrarSesion()" class="text-xs text-neutral-400 hover:text-white px-3 py-1.5 rounded-xl hover:bg-neutral-800/80 transition flex items-center gap-1.5 border border-transparent hover:border-neutral-800" title="Cerrar Sesión">
+                    <i class="fa-solid fa-right-from-bracket text-xs"></i>
+                    <span class="hidden sm:inline font-medium">Salir</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-6 py-8">
-        <!-- FORMULARIO NUEVO PRODUCTO -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
-            <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-plus-circle text-slate-800"></i> Registrar Nuevo Producto
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- DASHBOARD KPIS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Código / SKU *</label>
-                    <input id="sku" type="text" placeholder="Ej. PEN-001" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Productos</p>
+                    <h3 id="kpi-total-productos" class="text-2xl font-black text-slate-900 mt-1">0</h3>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">URL Foto (Opcional)</label>
-                    <input id="imagen_url" type="text" placeholder="https://..." class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre del producto *</label>
-                    <input id="nombre" type="text" placeholder="Ej. Lápiz Brindes" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Stock Inicial</label>
-                    <input id="stock" type="number" placeholder="0" min="0" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Stock Mínimo (Alerta)</label>
-                    <input id="minimo" type="number" placeholder="5" min="0" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20">
+                <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-800 text-lg">
+                    <i class="fa-solid fa-boxes-stacked"></i>
                 </div>
             </div>
-            <div class="mt-4 flex justify-end">
-                <button onclick="crearProducto()" class="bg-slate-900 hover:bg-black text-white font-medium text-sm px-6 py-2.5 rounded-xl shadow-md transition flex items-center gap-2">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Unidades en Stock</p>
+                    <h3 id="kpi-total-unidades" class="text-2xl font-black text-slate-900 mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-cubes"></i>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Alertas Stock Bajo</p>
+                    <h3 id="kpi-stock-bajo" class="text-2xl font-black text-rose-600 mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+            </div>
+            <div id="kpi-box-movimientos" class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Movimientos</p>
+                    <h3 id="kpi-total-movimientos" class="text-2xl font-black text-slate-900 mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- FORMULARIO CREAR PRODUCTO (Solo visible para ADMIN o Usuarios) -->
+        <div id="seccion-crear-producto" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80">
+            <h2 class="text-base font-extrabold text-slate-900 mb-5 flex items-center gap-2 tracking-tight">
+                <i class="fa-solid fa-plus-circle text-slate-900"></i> Registrar Nuevo Producto
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Código / SKU *</label>
+                    <input id="sku" type="text" placeholder="Ej. PEN-001" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">URL Foto (Opcional)</label>
+                    <input id="imagen_url" type="text" placeholder="https://..." class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Nombre del producto *</label>
+                    <input id="nombre" type="text" placeholder="Ej. Lápiz Brindes" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Inicial</label>
+                    <input id="stock" type="number" placeholder="0" min="0" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Mínimo (Alerta)</label>
+                    <input id="minimo" type="number" placeholder="5" min="0" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                </div>
+            </div>
+            <div class="mt-5 flex justify-end">
+                <button onclick="crearProducto()" class="bg-slate-900 hover:bg-black text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl shadow-md transition active:scale-[0.98] flex items-center gap-2">
                     <i class="fa-solid fa-floppy-disk"></i> Guardar Producto
                 </button>
             </div>
         </div>
 
         <!-- TABLA DE PRODUCTOS -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-8">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center flex-wrap gap-4">
-                <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-boxes-stacked text-slate-800"></i> Inventario de Productos
-                </h2>
-                <span id="total-productos" class="text-xs font-semibold bg-slate-100 text-slate-600 px-3 py-1 rounded-full">0 productos</span>
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                    <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-boxes-stacked text-slate-900"></i> Inventario de Productos
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Gestión de stock en tiempo real</p>
+                </div>
+
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <div class="relative flex-1 sm:w-64">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                        <input id="input-busqueda" oninput="filtrarProductos()" type="text" placeholder="Buscar por SKU o Nombre..." class="w-full bg-slate-50 border border-slate-200 pl-9 pr-3 py-2 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                    </div>
+                    <select id="filtro-estado" onchange="filtrarProductos()" class="bg-slate-50 border border-slate-200 text-xs text-slate-700 py-2 px-3 rounded-xl focus:outline-none font-semibold">
+                        <option value="TODOS">Todos</option>
+                        <option value="ALERTA">⚠️ Stock Bajo</option>
+                        <option value="OK">✅ Stock Normal</option>
+                    </select>
+                </div>
             </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
-                        <tr class="bg-slate-50/50 text-slate-400 font-semibold text-xs uppercase border-b border-slate-100">
-                            <th class="p-4">Foto</th>
+                        <tr class="bg-slate-50/80 text-slate-400 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100">
+                            <th class="p-4 pl-6">Foto</th>
                             <th class="p-4">SKU / Código</th>
                             <th class="p-4">Producto</th>
                             <th class="p-4">Stock Actual</th>
                             <th class="p-4">Estado</th>
-                            <th class="p-4 text-center">Acciones / Movimiento</th>
+                            <th class="p-4 text-center pr-6">Acciones / Movimiento</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-productos" class="divide-y divide-slate-100"></tbody>
@@ -150,57 +239,93 @@
             </div>
         </div>
 
-        <!-- HISTORIAL DE MOVIMIENTOS -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <div class="p-6 border-b border-slate-100">
-                <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-clock-rotate-left text-slate-800"></i> Historial de Movimientos
-                </h2>
+        <!-- HISTORIAL DE MOVIMIENTOS (EXCLUSIVO PARA ADMIN) -->
+        <div id="seccion-movimientos-admin" class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <div>
+                    <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-slate-900"></i> Registro de Movimientos <span class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-md border border-indigo-200">Solo Admin</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Historial y edición de auditoría</p>
+                </div>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
-                        <tr class="bg-slate-50/50 text-slate-400 font-semibold text-xs uppercase border-b border-slate-100">
-                            <th class="p-4">Fecha / Hora</th>
+                        <tr class="bg-slate-50/80 text-slate-400 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100">
+                            <th class="p-4 pl-6">Fecha / Hora</th>
                             <th class="p-4">Tipo</th>
                             <th class="p-4">Cantidad</th>
                             <th class="p-4">Responsable</th>
                             <th class="p-4">Observación</th>
+                            <th class="p-4 text-center pr-6">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-movimientos" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
         </div>
+
     </main>
 
-    <!-- MODAL MOVIMIENTOS -->
-    <div id="modal-movimiento" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center hidden z-50">
-        <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
-            <h3 id="modal-titulo" class="text-lg font-bold text-slate-800 mb-4">Registrar Movimiento</h3>
+    <!-- MODAL MOVIMIENTO -->
+    <div id="modal-movimiento" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white p-7 rounded-3xl shadow-2xl w-full max-w-md border border-slate-100 relative">
+            <h3 id="modal-titulo" class="text-lg font-extrabold text-slate-900 mb-5">Registrar Movimiento</h3>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Responsable</label>
-                    <input id="modal-usuario" type="text" readonly class="w-full border border-slate-100 bg-slate-50 p-2.5 rounded-xl text-sm font-bold text-slate-700">
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Responsable del Registro</label>
+                    <input id="modal-usuario" type="text" readonly class="w-full border border-slate-200/80 bg-slate-100/70 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Cantidad *</label>
-                    <input id="modal-cantidad" type="number" min="1" value="1" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20">
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Cantidad *</label>
+                    <input id="modal-cantidad" type="number" min="1" value="1" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 font-bold">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Observación / Motivo</label>
-                    <textarea id="modal-notas" rows="2" placeholder="Ej. Retirado para evento de MKT" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20"></textarea>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Observación / Motivo</label>
+                    <textarea id="modal-notas" rows="2" placeholder="Ej. Retirado para evento de MKT" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/20"></textarea>
                 </div>
             </div>
-            <div class="mt-6 flex justify-end gap-3">
-                <button onclick="cerrarModal()" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700">Cancelar</button>
-                <button onclick="confirmarMovimiento()" class="bg-slate-900 hover:bg-black text-white font-medium text-xs px-5 py-2.5 rounded-xl shadow-md">Confirmar</button>
+            <div class="mt-6 flex justify-end gap-2.5">
+                <button onclick="cerrarModal()" class="px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition">Cancelar</button>
+                <button onclick="confirmarMovimiento()" class="bg-slate-900 hover:bg-black text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl shadow-md transition active:scale-[0.98]">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR PRODUCTO (ADMIN) -->
+    <div id="modal-editar-producto" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white p-7 rounded-3xl shadow-2xl w-full max-w-md border border-slate-100 relative">
+            <h3 class="text-lg font-extrabold text-slate-900 mb-5">Editar Producto</h3>
+            <input id="edit-prod-id" type="hidden">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Código / SKU</label>
+                    <input id="edit-prod-sku" type="text" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Nombre del Producto</label>
+                    <input id="edit-prod-nombre" type="text" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-bold">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">URL Foto</label>
+                    <input id="edit-prod-imagen" type="text" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Mínimo (Alerta)</label>
+                    <input id="edit-prod-minimo" type="number" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs">
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-2.5">
+                <button onclick="cerrarModalEditarProd()" class="px-4 py-2.5 text-xs font-bold text-slate-500">Cancelar</button>
+                <button onclick="guardarEdicionProducto()" class="bg-slate-900 hover:bg-black text-white font-bold text-xs uppercase px-5 py-2.5 rounded-xl shadow-md">Guardar Cambios</button>
             </div>
         </div>
     </div>
 
     <script>
         const API_URL = "";
+        let productosGlobales = [];
         let productoSeleccionadoId = null;
         let tipoMovimientoSeleccionado = null;
         let usuarioSesion = JSON.parse(localStorage.getItem('usuario_sesion')) || null;
@@ -218,12 +343,25 @@
         function mostrarLogin() {
             document.getElementById('form-registro').classList.add('hidden');
             document.getElementById('form-login').classList.remove('hidden');
-            document.getElementById('auth-subtitulo').innerText = 'Ingrese sus credenciales para continuar';
+            document.getElementById('auth-subtitulo').innerText = 'Brindes & Materiales MKT';
         }
 
         function ocultarAuth() {
             document.getElementById('pantalla-auth').classList.add('hidden');
             document.getElementById('nombre-usuario-display').innerText = usuarioSesion.nombre;
+            
+            const badgeRol = document.getElementById('badge-rol');
+            badgeRol.innerText = usuarioSesion.rol;
+
+            if (usuarioSesion.rol === 'ADMIN') {
+                badgeRol.className = "text-[9px] font-black uppercase px-2 py-0.5 rounded-md bg-indigo-600 text-white shadow-sm";
+                document.getElementById('seccion-movimientos-admin').classList.remove('hidden');
+            } else {
+                badgeRol.className = "text-[9px] font-black uppercase px-2 py-0.5 rounded-md bg-slate-800 text-slate-300";
+                document.getElementById('seccion-movimientos-admin').classList.add('hidden');
+                document.getElementById('kpi-box-movimientos').classList.add('hidden');
+            }
+
             cargarTodo();
         }
 
@@ -237,7 +375,7 @@
             const password = document.getElementById('login-pass').value.trim();
 
             if (!email || !password) {
-                alert("Completa el correo y la contraseña.");
+                alert("Por favor ingresa correo y contraseña.");
                 return;
             }
 
@@ -263,9 +401,10 @@
             const nombre = document.getElementById('reg-nombre').value.trim();
             const email = document.getElementById('reg-email').value.trim();
             const password = document.getElementById('reg-pass').value.trim();
+            const es_admin = document.getElementById('reg-admin').checked;
 
             if (!nombre || !email || !password) {
-                alert("Completa todos los campos para el registro.");
+                alert("Completa todos los datos.");
                 return;
             }
 
@@ -273,30 +412,33 @@
                 const res = await fetch(`${API_URL}/api/registro`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ nombre, email, password })
+                    body: JSON.stringify({ nombre, email, password, es_admin })
                 });
 
                 if (res.ok) {
-                    alert("¡Registro exitoso! Ahora inicia sesión.");
+                    alert("¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.");
                     mostrarLogin();
                 } else {
                     const err = await res.json();
-                    alert(err.detail || "No se pudo completar el registro.");
+                    alert(err.detail || "No se pudo crear la cuenta.");
                 }
             } catch (e) { alert("Error de conexión."); }
         }
 
         async function cargarTodo() {
             await cargarProductos();
-            await cargarMovimientos();
+            if (usuarioSesion && usuarioSesion.rol === 'ADMIN') {
+                await cargarMovimientos();
+            }
         }
 
         async function cargarProductos() {
             try {
                 const res = await fetch(`${API_URL}/api/productos`);
                 if (res.ok) {
-                    const productos = await res.json();
-                    renderizarProductos(productos);
+                    productosGlobales = await res.json();
+                    renderizarProductos(productosGlobales);
+                    actualizarKPIs(productosGlobales);
                 }
             } catch (err) { console.error(err); }
         }
@@ -307,41 +449,82 @@
                 if (res.ok) {
                     const movimientos = await res.json();
                     renderizarMovimientos(movimientos);
+                    document.getElementById('kpi-total-movimientos').innerText = movimientos.length;
                 }
             } catch (err) { console.error(err); }
         }
 
+        function actualizarKPIs(productos) {
+            let totalUnidades = 0;
+            let stockBajoCount = 0;
+
+            productos.forEach(p => {
+                totalUnidades += p.stock_actual;
+                if (p.alerta_stock_bajo) stockBajoCount++;
+            });
+
+            document.getElementById('kpi-total-productos').innerText = productos.length;
+            document.getElementById('kpi-total-unidades').innerText = totalUnidades;
+            document.getElementById('kpi-stock-bajo').innerText = stockBajoCount;
+        }
+
+        function filtrarProductos() {
+            const texto = document.getElementById('input-busqueda').value.toLowerCase().trim();
+            const filtroEstado = document.getElementById('filtro-estado').value;
+
+            const resultado = productosGlobales.filter(p => {
+                const coincideTexto = p.nombre.toLowerCase().includes(texto) || p.sku.toLowerCase().includes(texto);
+                let coincideEstado = true;
+
+                if (filtroEstado === 'ALERTA') coincideEstado = p.alerta_stock_bajo;
+                if (filtroEstado === 'OK') coincideEstado = !p.alerta_stock_bajo;
+
+                return coincideTexto && coincideEstado;
+            });
+
+            renderizarProductos(resultado);
+        }
+
         function renderizarProductos(productos) {
             const tbody = document.getElementById('tabla-productos');
-            document.getElementById('total-productos').innerText = `${productos.length} productos`;
             tbody.innerHTML = '';
 
             if (!productos || productos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 text-xs">No hay productos registrados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 text-xs">No hay productos en el inventario.</td></tr>`;
                 return;
             }
 
+            const esAdmin = usuarioSesion && usuarioSesion.rol === 'ADMIN';
+
             productos.forEach(p => {
                 const alerta = p.alerta_stock_bajo 
-                    ? `<span class="bg-red-50 text-red-600 border border-red-200 text-[11px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-triangle-exclamation"></i> Stock Bajo</span>`
-                    : `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[11px] font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-check"></i> Normal</span>`;
+                    ? `<span class="bg-rose-50 text-rose-600 border border-rose-200 text-[11px] font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> Stock Bajo</span>`
+                    : `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[11px] font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-1"><i class="fa-solid fa-check"></i> Normal</span>`;
 
                 const miniatura = p.imagen_url && p.imagen_url.trim() !== ""
-                    ? `<img src="${p.imagen_url}" class="h-10 w-10 object-cover rounded-lg border border-slate-200" alt="${p.nombre}" onerror="this.onerror=null; this.src='https://via.placeholder.com/40?text=NP';">`
-                    : `<div class="h-10 w-10 bg-slate-100 text-slate-400 rounded-lg flex items-center justify-center text-xs border border-slate-200"><i class="fa-solid fa-image"></i></div>`;
+                    ? `<img src="${p.imagen_url}" class="h-10 w-10 object-cover rounded-xl border border-slate-200/80 shadow-sm" alt="${p.nombre}" onerror="this.onerror=null; this.src='https://via.placeholder.com/40?text=NP';">`
+                    : `<div class="h-10 w-10 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center text-xs border border-slate-200/80"><i class="fa-solid fa-image"></i></div>`;
+
+                let botonesAdmin = '';
+                if (esAdmin) {
+                    botonesAdmin = `
+                        <button onclick="abrirEditarProducto(${p.id}, '${p.sku}', '${p.nombre}', '${p.imagen_url || ''}', ${p.stock_minimo})" class="text-slate-400 hover:text-indigo-600 p-1.5 rounded-lg transition" title="Editar Producto"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="borrarProducto(${p.id}, '${p.nombre}')" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg transition" title="Borrar Producto"><i class="fa-solid fa-trash-can"></i></button>
+                    `;
+                }
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/80 transition">
-                        <td class="p-4">${miniatura}</td>
-                        <td class="p-4 font-mono text-slate-500 font-medium">${p.sku}</td>
-                        <td class="p-4 font-semibold text-slate-800">${p.nombre}</td>
-                        <td class="p-4"><span class="text-base font-extrabold text-slate-800">${p.stock_actual}</span> <span class="text-xs text-slate-400">unid.</span></td>
+                        <td class="p-4 pl-6">${miniatura}</td>
+                        <td class="p-4 font-mono text-slate-500 font-bold text-xs">${p.sku}</td>
+                        <td class="p-4 font-bold text-slate-800">${p.nombre}</td>
+                        <td class="p-4"><span class="text-base font-black text-slate-900">${p.stock_actual}</span> <span class="text-xs font-semibold text-slate-400">unid.</span></td>
                         <td class="p-4">${alerta}</td>
-                        <td class="p-4 text-center">
+                        <td class="p-4 text-center pr-6">
                             <div class="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-                                <button onclick="abrirModal(${p.id}, 'ENTRADA')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">+ Entrada</button>
-                                <button onclick="abrirModal(${p.id}, 'SALIDA')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">- Salida</button>
-                                <button onclick="borrarProducto(${p.id}, '${p.nombre}')" class="text-slate-400 hover:text-red-500 p-1.5 rounded-lg transition" title="Borrar Producto"><i class="fa-solid fa-trash"></i></button>
+                                <button onclick="abrirModal(${p.id}, 'ENTRADA')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">+ Entrada</button>
+                                <button onclick="abrirModal(${p.id}, 'SALIDA')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">- Salida</button>
+                                ${botonesAdmin}
                             </div>
                         </td>
                     </tr>
@@ -354,23 +537,26 @@
             tbody.innerHTML = '';
 
             if (!movimientos || movimientos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400 text-xs">No hay movimientos registrados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 text-xs">No hay movimientos registrados.</td></tr>`;
                 return;
             }
 
             movimientos.forEach(m => {
                 const fechaStr = m.fecha ? new Date(m.fecha).toLocaleString('es-ES') : '-';
                 const tipoBadge = m.tipo === 'ENTRADA'
-                    ? `<span class="bg-emerald-100 text-emerald-700 text-[11px] font-bold px-2 py-0.5 rounded-full">ENTRADA</span>`
-                    : `<span class="bg-rose-100 text-rose-700 text-[11px] font-bold px-2 py-0.5 rounded-full">SALIDA</span>`;
+                    ? `<span class="bg-emerald-100 text-emerald-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">ENTRADA</span>`
+                    : `<span class="bg-rose-100 text-rose-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">SALIDA</span>`;
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/80 transition text-xs">
-                        <td class="p-4 text-slate-500 font-mono">${fechaStr}</td>
+                        <td class="p-4 pl-6 text-slate-500 font-mono font-medium">${fechaStr}</td>
                         <td class="p-4">${tipoBadge}</td>
-                        <td class="p-4 font-bold text-slate-800">${m.cantidad} unid.</td>
-                        <td class="p-4 font-semibold text-slate-700">${m.usuario}</td>
+                        <td class="p-4 font-black text-slate-800">${m.cantidad} unid.</td>
+                        <td class="p-4 font-bold text-slate-700">${m.usuario}</td>
                         <td class="p-4 text-slate-500">${m.notas || '-'}</td>
+                        <td class="p-4 text-center pr-6">
+                            <button onclick="editarMovimientoPrompt(${m.id}, '${m.usuario}', '${m.notas || ''}', ${m.cantidad})" class="text-slate-400 hover:text-indigo-600 p-1.5 rounded-lg transition" title="Editar Movimiento"><i class="fa-solid fa-pen-to-square"></i></button>
+                        </td>
                     </tr>
                 `;
             });
@@ -420,6 +606,64 @@
                     alert("Atención: " + (err.detail || "No se pudo realizar la operación."));
                 }
             } catch (error) { alert("Error de conexión al servidor."); }
+        }
+
+        function abrirEditarProducto(id, sku, nombre, imagen, minimo) {
+            document.getElementById('edit-prod-id').value = id;
+            document.getElementById('edit-prod-sku').value = sku;
+            document.getElementById('edit-prod-nombre').value = nombre;
+            document.getElementById('edit-prod-imagen').value = imagen;
+            document.getElementById('edit-prod-minimo').value = minimo;
+            document.getElementById('modal-editar-producto').classList.remove('hidden');
+        }
+
+        function cerrarModalEditarProd() {
+            document.getElementById('modal-editar-producto').classList.add('hidden');
+        }
+
+        async function guardarEdicionProducto() {
+            const id = document.getElementById('edit-prod-id').value;
+            const sku = document.getElementById('edit-prod-sku').value.trim();
+            const nombre = document.getElementById('edit-prod-nombre').value.trim();
+            const imagen_url = document.getElementById('edit-prod-imagen').value.trim();
+            const stock_minimo = parseInt(document.getElementById('edit-prod-minimo').value) || 0;
+
+            try {
+                const res = await fetch(`${API_URL}/api/productos/${id}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ sku, nombre, imagen_url, stock_minimo })
+                });
+
+                if (res.ok) {
+                    cerrarModalEditarProd();
+                    await cargarProductos();
+                } else { alert("No se pudo editar el producto."); }
+            } catch (e) { alert("Error al guardar la edición."); }
+        }
+
+        async function editarMovimientoPrompt(id, usuarioActual, notasActuales, cantidadActual) {
+            const nuevoResp = prompt("Editar Responsable:", usuarioActual);
+            const nuevasNotas = prompt("Editar Observación:", notasActuales);
+            const nuevaCantidad = prompt("Editar Cantidad:", cantidadActual);
+
+            if (nuevoResp !== null && nuevaCantidad !== null) {
+                try {
+                    const res = await fetch(`${API_URL}/api/movimientos/${id}`, {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            usuario: nuevoResp,
+                            notas: nuevasNotas,
+                            cantidad: parseInt(nuevaCantidad) || cantidadActual
+                        })
+                    });
+
+                    if (res.ok) {
+                        await cargarTodo();
+                    } else { alert("No se pudo editar el movimiento."); }
+                } catch (e) { alert("Error de conexión."); }
+            }
         }
 
         async function crearProducto() {
