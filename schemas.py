@@ -1,22 +1,22 @@
-from typing import Optional, List
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
+from typing import Optional
 from datetime import datetime
 
-class UsuarioCreate(BaseModel):
+class UsuarioBase(BaseModel):
     nombre: str
-    email: str
+
+class UsuarioCreate(UsuarioBase):
     password: str
 
-class UsuarioOut(BaseModel):
+class UsuarioOut(UsuarioBase):
     id: int
-    nombre: str
-    email: str
     rol: str
 
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        from_attributes = True
 
 class LoginRequest(BaseModel):
-    email: str
+    nombre: str
     password: str
 
 class ProductoBase(BaseModel):
@@ -25,20 +25,24 @@ class ProductoBase(BaseModel):
     descripcion: Optional[str] = None
     imagen_url: Optional[str] = None
     categoria_id: Optional[int] = None
-    stock_minimo: int = 0
+    stock_minimo: int = 5
 
 class ProductoCreate(ProductoBase):
     stock_inicial: int = 0
 
-class ProductoUpdate(ProductoBase):
-    pass
+class ProductoUpdate(BaseModel):
+    sku: str
+    nombre: str
+    imagen_url: Optional[str] = None
+    stock_minimo: int
 
 class ProductoOut(ProductoBase):
     id: int
     stock_actual: int
     alerta_stock_bajo: bool = False
 
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        from_attributes = True
 
 class MovimientoCreate(BaseModel):
     producto_id: int
@@ -57,13 +61,12 @@ class MovimientoOut(BaseModel):
     producto_id: int
     tipo: str
     cantidad: int
+    fecha: datetime
     usuario: str
     notas: Optional[str] = None
-    fecha: datetime
-    
-    # Nuevos campos del producto vinculado
     producto_sku: Optional[str] = None
     producto_nombre: Optional[str] = None
     producto_imagen: Optional[str] = None
 
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        from_attributes = True
