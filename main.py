@@ -1,7 +1,7 @@
 import os
 import shutil
 from typing import List, Optional
-from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile, Form
+from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
@@ -53,7 +53,6 @@ def leer_frontend():
 @app.post("/api/upload")
 async def subir_imagen(file: UploadFile = File(...)):
     try:
-        # Generar nombre único para el archivo
         nombre_archivo = f"{int(os.urandom(4).hex(), 16)}_{file.filename.replace(' ', '_')}"
         ruta_guardado = os.path.join(UPLOADS_DIR, nombre_archivo)
         
