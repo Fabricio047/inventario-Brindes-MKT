@@ -5,3 +5,11 @@ pydantic
 python-multipart
 aiofiles
 cloudinary
+passlib[bcrypt]
+pyjwtapi
+uvicorn
+sqlalchemy
+pydantic
+python-multipart
+aiofiles
+cloudinary
