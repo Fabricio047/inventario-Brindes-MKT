@@ -86,7 +86,7 @@ def verificar_admin(usuario_actual: models.Usuario = Depends(obtener_usuario_act
 def crear_admin_por_defecto():
     db = Session(bind=engine)
     try:
-        admin_email = "admin@lgimportados.com"
+        admin_email = "Fabricio@gmail.com"
         admin_existente = db.query(models.Usuario).filter(models.Usuario.email == admin_email).first()
         if not admin_existente:
             admin_maestro = models.Usuario(
