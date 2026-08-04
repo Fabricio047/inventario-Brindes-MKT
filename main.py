@@ -1,16 +1,18 @@
 import os
+import io
 import shutil
 from datetime import datetime, timedelta
 from typing import List, Optional
 
 from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile
 from fastapi.security import OAuth2PasswordBearer
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from sqlalchemy.orm import Session
 import bcrypt
 import jwt
 import cloudinary
 import cloudinary.uploader
+import pandas as pd
 
 import models
 import schemas
@@ -36,7 +38,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Control de Stock - Brindes MKT")
 
-# --- FUNCIONES DE SEGURIDAD (BCRYPT DIRECTO) ---
+# --- FUNCIONES DE SEGURIDAD ---
 
 def obtener_password_hash(password: str) -> str:
     pwd_bytes = password.encode('utf-8')
@@ -45,7 +47,11 @@ def obtener_password_hash(password: str) -> str:
 
 def verificar_password(plain_password: str, hashed_password: str) -> bool:
     try:
-        return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+        # Verificar con bcrypt
+        if hashed_password.startswith("$2b$") or hashed_password.startswith("$2a$"):
+            return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+        # Comparación fallback por si la clave antigua quedó en texto plano
+        return plain_password == hashed_password
     except Exception:
         return False
 
@@ -82,25 +88,34 @@ def verificar_admin(usuario_actual: models.Usuario = Depends(obtener_usuario_act
         )
     return usuario_actual
 
-# Crear Admin por defecto al iniciar
-def crear_admin_por_defecto():
+# Crear / Actualizar Admin por defecto al iniciar
+def garantizar_admin_maestro():
     db = Session(bind=engine)
     try:
         admin_email = "admin@lgimportados.com"
+        admin_pass_raw = "admin123*"
         admin_existente = db.query(models.Usuario).filter(models.Usuario.email == admin_email).first()
+        
         if not admin_existente:
             admin_maestro = models.Usuario(
                 nombre="ADMINISTRADOR",
                 email=admin_email,
-                password=obtener_password_hash("admin123*"),
+                password=obtener_password_hash(admin_pass_raw),
                 rol="ADMIN"
             )
             db.add(admin_maestro)
             db.commit()
+        else:
+            # Asegurar que la contraseña esté correctamente hasheada y con rol ADMIN
+            admin_existente.password = obtener_password_hash(admin_pass_raw)
+            admin_existente.rol = "ADMIN"
+            db.commit()
+    except Exception as e:
+        print(f"Error ajustando admin: {e}")
     finally:
         db.close()
 
-crear_admin_por_defecto()
+garantizar_admin_maestro()
 
 @app.get("/")
 def leer_frontend():
@@ -280,9 +295,7 @@ def editar_movimiento(movimiento_id: int, datos: schemas.MovimientoUpdate, db: S
     db.commit()
     return {"mensaje": "Movimiento actualizado con éxito"}
 
-import io
-import pandas as pd
-from fastapi.responses import StreamingResponse
+# --- EXPORTAR EXCEL ---
 
 @app.get("/api/reportes/excel")
 def descargar_reporte_excel(db: Session = Depends(get_db), usuario: models.Usuario = Depends(obtener_usuario_actual)):
