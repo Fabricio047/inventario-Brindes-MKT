@@ -60,7 +60,8 @@ class MovimientoOut(BaseModel):
     usuario: str
     notas: Optional[str] = None
     fecha: datetime
-    # Información del producto vinculado
+    
+    # Nuevos campos del producto vinculado
     producto_sku: Optional[str] = None
     producto_nombre: Optional[str] = None
     producto_imagen: Optional[str] = None
