@@ -155,7 +155,19 @@ def eliminar_producto(producto_id: int, db: Session = Depends(get_db)):
 
 @app.get("/api/movimientos", response_model=List[schemas.MovimientoOut])
 def obtener_movimientos(db: Session = Depends(get_db)):
-    return db.query(models.MovimientoInventario).order_by(models.MovimientoInventario.fecha.desc()).limit(50).all()
+    movimientos = db.query(models.MovimientoInventario).order_by(models.MovimientoInventario.fecha.desc()).limit(50).all()
+    resultado = []
+    for mov in movimientos:
+        mov_dict = schemas.MovimientoOut.model_validate(mov)
+        if mov.producto:
+            mov_dict.producto_sku = mov.producto.sku
+            mov_dict.producto_nombre = mov.producto.nombre
+            mov_dict.producto_imagen = mov.producto.imagen_url
+        else:
+            mov_dict.producto_nombre = "Producto Eliminado"
+            mov_dict.producto_sku = "N/A"
+        resultado.append(mov_dict)
+    return resultado
 
 @app.post("/api/movimientos", status_code=status.HTTP_201_CREATED)
 def registrar_movimiento(movimiento: schemas.MovimientoCreate, db: Session = Depends(get_db)):
