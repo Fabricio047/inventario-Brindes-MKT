@@ -7,3 +7,4 @@ aiofiles
 cloudinary
 bcrypt
 pyjwt
+psycopg2-binary
