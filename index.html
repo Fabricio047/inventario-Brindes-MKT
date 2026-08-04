@@ -9,20 +9,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass-header { background: rgba(10, 10, 10, 0.92); backdrop-filter: blur(12px); }
+        .glass-header { background: rgba(10, 10, 10, 0.94); backdrop-filter: blur(14px); }
+        .card-depth { 
+            border-radius: 18px; 
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05); 
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
     </style>
 </head>
-<body class="bg-slate-100/70 text-slate-800 min-h-screen antialiased selection:bg-slate-900 selection:text-white">
+<body class="bg-slate-100/80 text-slate-800 min-h-screen antialiased selection:bg-slate-900 selection:text-white">
 
     <!-- PANTALLA LOGIN / REGISTRO -->
     <div id="pantalla-auth" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 border border-slate-100 relative overflow-hidden">
+        <div class="bg-white card-depth w-full max-w-md p-8 relative overflow-hidden">
             <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900"></div>
             
             <div class="text-center mb-8">
-                <div class="inline-flex items-center space-x-2 bg-slate-900 text-white px-3.5 py-1.5 rounded-xl mb-4 shadow-sm">
-                    <span class="font-black text-xs tracking-wider">LG</span>
-                    <span class="text-[11px] tracking-widest font-bold text-slate-300">IMPORTADOS</span>
+                <!-- LOGO OFICIAL EN LOGIN -->
+                <div class="flex justify-center mb-3">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzN8O6A5aU64xWv-xN8o01A1867119" alt="LG Importados Logo" class="h-16 object-contain" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x50?text=LG+IMPORTADOS';">
                 </div>
                 <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Gestión de Inventario</h2>
                 <p class="text-xs font-medium text-slate-500 mt-1.5" id="auth-subtitulo">Brindes & Materiales MKT</p>
@@ -91,11 +96,11 @@
 
     <!-- HEADER -->
     <header class="glass-header text-white shadow-xl sticky top-0 z-40 border-b border-neutral-800/80">
-        <div class="max-w-7xl mx-auto px-6 py-3.5 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                <div class="flex items-center space-x-2.5">
-                    <span class="bg-white text-black font-black text-xs px-2.5 py-1 rounded-lg tracking-wider uppercase shadow-sm">LG</span>
-                    <span class="font-bold text-xs tracking-widest text-slate-300">IMPORTADOS</span>
+                <!-- LOGO OFICIAL EN HEADER -->
+                <div class="flex items-center space-x-3 bg-white/10 px-3 py-1 rounded-xl backdrop-blur-sm border border-white/10">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzN8O6A5aU64xWv-xN8o01A1867119" alt="LG Importados Logo" class="h-7 object-contain brightness-0 invert">
                 </div>
                 <div class="h-4 w-px bg-neutral-800"></div>
                 <div>
@@ -121,9 +126,9 @@
 
     <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
 
-        <!-- DASHBOARD KPIS -->
+        <!-- DASHBOARD KPIS CON PROFUNDIDAD -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div class="bg-white p-5 card-depth flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Productos</p>
                     <h3 id="kpi-total-productos" class="text-2xl font-black text-slate-900 mt-1">0</h3>
@@ -132,7 +137,7 @@
                     <i class="fa-solid fa-boxes-stacked"></i>
                 </div>
             </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div class="bg-white p-5 card-depth flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Unidades en Stock</p>
                     <h3 id="kpi-total-unidades" class="text-2xl font-black text-slate-900 mt-1">0</h3>
@@ -141,7 +146,7 @@
                     <i class="fa-solid fa-cubes"></i>
                 </div>
             </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div class="bg-white p-5 card-depth flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Alertas Stock Bajo</p>
                     <h3 id="kpi-stock-bajo" class="text-2xl font-black text-rose-600 mt-1">0</h3>
@@ -150,7 +155,7 @@
                     <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
             </div>
-            <div id="kpi-box-movimientos" class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between hidden">
+            <div id="kpi-box-movimientos" class="bg-white p-5 card-depth flex items-center justify-between hidden">
                 <div>
                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Movimientos</p>
                     <h3 id="kpi-total-movimientos" class="text-2xl font-black text-slate-900 mt-1">0</h3>
@@ -161,8 +166,8 @@
             </div>
         </div>
 
-        <!-- FORMULARIO REGISTRAR PRODUCTO CON DRAG & DROP -->
-        <div id="seccion-crear-producto" class="bg-white p-7 rounded-3xl shadow-sm border border-slate-200/80 max-w-xl mx-auto hidden">
+        <!-- FORMULARIO REGISTRAR PRODUCTO CON PROFUNDIDAD Y DRAG & DROP -->
+        <div id="seccion-crear-producto" class="bg-white p-7 card-depth max-w-xl mx-auto hidden">
             <h2 class="text-base font-extrabold text-slate-900 mb-5 flex items-center gap-2 tracking-tight">
                 <i class="fa-solid fa-plus-circle text-indigo-600"></i> Registrar Nuevo Producto
             </h2>
@@ -174,7 +179,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1.5">Nombre del Producto *</label>
-                        <input id="nombre" type="text" placeholder="Ej. Lápiz Brindes" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                        <input id="nombre" type="text" placeholder="Ej. Bolígrafo Azul" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
                     </div>
                 </div>
 
@@ -185,14 +190,14 @@
                         <i id="drop-icon" class="fa-solid fa-cloud-arrow-up text-2xl text-slate-400"></i>
                         <p id="drop-text" class="text-xs font-semibold text-slate-600">Arrastra una imagen aquí o <span class="text-indigo-600 underline">haz clic para examinar</span></p>
                         <input id="archivo_imagen" type="file" accept="image/*" class="hidden" onchange="mostrarVistaPrevia(this.files[0])">
-                        <img id="preview-img" class="h-24 w-24 object-cover rounded-xl shadow-md hidden border border-slate-200 mt-1">
+                        <img id="preview-img" class="h-24 w-24 object-cover rounded-full shadow-md hidden border-2 border-white mt-1">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Inicial</label>
-                        <input id="stock" type="number" placeholder="15" min="0" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-bold">
+                        <input id="stock" type="number" placeholder="120" min="0" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-bold">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Mínimo (Alerta)</label>
@@ -206,8 +211,8 @@
             </div>
         </div>
 
-        <!-- TABLA DE PRODUCTOS -->
-        <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <!-- TABLA DE PRODUCTOS CON PROFUNDIDAD Y MÁS VIDA -->
+        <div class="bg-white card-depth overflow-hidden">
             <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div>
                     <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
@@ -226,8 +231,9 @@
                     </div>
                     <select id="filtro-estado" onchange="filtrarProductos()" class="bg-slate-50 border border-slate-200 text-xs text-slate-700 py-2 px-3 rounded-xl focus:outline-none font-semibold">
                         <option value="TODOS">Todos</option>
-                        <option value="ALERTA">⚠️ Stock Bajo</option>
-                        <option value="OK">✅ Stock Normal</option>
+                        <option value="DISPONIBLE">🟢 Disponible</option>
+                        <option value="ALERTA">🟠 Stock Bajo</option>
+                        <option value="AGOTADO">🔴 Sin stock</option>
                     </select>
                 </div>
             </div>
@@ -237,9 +243,8 @@
                     <thead>
                         <tr class="bg-slate-50/80 text-slate-400 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100">
                             <th class="p-4 pl-6">Foto</th>
-                            <th class="p-4">SKU / Código</th>
                             <th class="p-4">Producto</th>
-                            <th class="p-4">Stock Actual</th>
+                            <th class="p-4">Stock</th>
                             <th class="p-4">Estado</th>
                             <th class="p-4 text-center pr-6">Acciones / Movimiento</th>
                         </tr>
@@ -249,8 +254,8 @@
             </div>
         </div>
 
-        <!-- HISTORIAL DE MOVIMIENTOS -->
-        <div id="seccion-movimientos-admin" class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden hidden">
+        <!-- HISTORIAL DE MOVIMIENTOS CON PROFUNDIDAD -->
+        <div id="seccion-movimientos-admin" class="bg-white card-depth overflow-hidden hidden">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center">
                 <div>
                     <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
@@ -281,7 +286,7 @@
 
     <!-- MODAL MOVIMIENTO -->
     <div id="modal-movimiento" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-        <div class="bg-white p-7 rounded-3xl shadow-2xl w-full max-w-md border border-slate-100 relative">
+        <div class="bg-white p-7 card-depth w-full max-w-md relative">
             <h3 id="modal-titulo" class="text-lg font-extrabold text-slate-900 mb-5">Registrar Movimiento</h3>
             <div class="space-y-4">
                 <div>
@@ -333,7 +338,7 @@
         // --- CONFIGURACIÓN DE DRAG & DROP ---
         const dropZone = document.getElementById('drop-zone');
         
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function(eventName) {
             dropZone.addEventListener(eventName, preventDefaults, false);
         });
 
@@ -342,15 +347,15 @@
             e.stopPropagation();
         }
 
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => dropZone.classList.add('bg-indigo-100/50', 'border-indigo-600'), false);
+        ['dragenter', 'dragover'].forEach(function(eventName) {
+            dropZone.addEventListener(eventName, function() { dropZone.classList.add('bg-indigo-100/50', 'border-indigo-600'); }, false);
         });
 
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => dropZone.classList.remove('bg-indigo-100/50', 'border-indigo-600'), false);
+        ['dragleave', 'drop'].forEach(function(eventName) {
+            dropZone.addEventListener(eventName, function() { dropZone.classList.remove('bg-indigo-100/50', 'border-indigo-600'); }, false);
         });
 
-        dropZone.addEventListener('drop', (e) => {
+        dropZone.addEventListener('drop', function(e) {
             const dt = e.dataTransfer;
             const files = dt.files;
             if (files && files.length > 0) {
@@ -548,8 +553,9 @@
                 const coincideTexto = p.nombre.toLowerCase().includes(texto) || p.sku.toLowerCase().includes(texto);
                 let coincideEstado = true;
 
-                if (filtroEstado === 'ALERTA') coincideEstado = p.alerta_stock_bajo;
-                if (filtroEstado === 'OK') coincideEstado = !p.alerta_stock_bajo;
+                if (filtroEstado === 'DISPONIBLE') coincideEstado = p.stock_actual > p.stock_minimo;
+                if (filtroEstado === 'ALERTA') coincideEstado = p.stock_actual > 0 && p.stock_actual <= p.stock_minimo;
+                if (filtroEstado === 'AGOTADO') coincideEstado = p.stock_actual === 0;
 
                 return coincideTexto && coincideEstado;
             });
@@ -562,24 +568,26 @@
             tbody.innerHTML = '';
 
             if (!productos || productos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400 text-xs">No hay productos en el inventario.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-slate-400 text-xs">No hay productos en el inventario.</td></tr>';
                 return;
             }
 
             const esAdmin = usuarioSesion && usuarioSesion.rol === 'ADMIN';
 
             productos.forEach(function(p) {
-                const alerta = p.alerta_stock_bajo 
-                    ? '<span class="bg-rose-50 text-rose-600 border border-rose-200 text-[11px] font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> Stock Bajo</span>'
-                    : '<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[11px] font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-1"><i class="fa-solid fa-check"></i> Normal</span>';
+                let badgeEstado = '';
+                if (p.stock_actual === 0) {
+                    badgeEstado = '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-600 border border-rose-200/60"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Sin stock</span>';
+                } else if (p.stock_actual <= p.stock_minimo) {
+                    badgeEstado = '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/60"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Bajo</span>';
+                } else {
+                    badgeEstado = '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200/60"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Disponible</span>';
+                }
 
-                let miniatura = '<div class="h-14 w-14 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center text-lg border border-slate-200/90 shadow-inner"><i class="fa-solid fa-image"></i></div>';
+                let miniatura = '<div class="h-11 w-11 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center text-sm border border-slate-200 shadow-inner"><i class="fa-solid fa-box"></i></div>';
                 if (p.imagen_url && p.imagen_url.trim() !== '') {
                     miniatura = '<div class="relative group cursor-pointer" onclick="abrirZoomImagen(\'' + p.imagen_url + '\', \'' + p.nombre + '\')" title="Haz clic para ampliar">' +
-                        '<img src="' + p.imagen_url + '" class="h-14 w-14 object-cover rounded-2xl border border-slate-200/90 shadow-sm bg-white p-0.5 group-hover:scale-105 group-hover:shadow-md transition duration-200" alt="' + p.nombre + '" onerror="this.onerror=null; this.src=\'https://via.placeholder.com/64?text=Foto\';">' +
-                        '<div class="absolute inset-0 bg-black/30 rounded-2xl opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs">' +
-                            '<i class="fa-solid fa-magnifying-glass-plus"></i>' +
-                        '</div>' +
+                        '<img src="' + p.imagen_url + '" class="h-11 w-11 object-cover rounded-full border-2 border-white shadow-sm bg-white p-0.5 group-hover:scale-105 transition duration-200" alt="' + p.nombre + '" onerror="this.onerror=null; this.src=\'https://via.placeholder.com/64?text=Foto\';">' +
                        '</div>';
                 }
 
@@ -590,14 +598,16 @@
 
                 tbody.innerHTML += '<tr class="hover:bg-slate-50/80 transition items-center">' +
                     '<td class="p-4 pl-6">' + miniatura + '</td>' +
-                    '<td class="p-4 font-mono text-slate-500 font-bold text-xs">' + p.sku + '</td>' +
-                    '<td class="p-4 font-bold text-slate-800 text-sm">' + p.nombre + '</td>' +
-                    '<td class="p-4"><span class="text-lg font-black text-slate-900">' + p.stock_actual + '</span> <span class="text-xs font-semibold text-slate-400">unid.</span></td>' +
-                    '<td class="p-4">' + alerta + '</td>' +
+                    '<td class="p-4">' +
+                        '<p class="font-bold text-slate-900 text-sm">' + p.nombre + '</p>' +
+                        '<p class="font-mono text-[11px] text-slate-400 font-medium">' + p.sku + '</p>' +
+                    '</td>' +
+                    '<td class="p-4 font-black text-slate-800 text-base">' + p.stock_actual + '</td>' +
+                    '<td class="p-4">' + badgeEstado + '</td>' +
                     '<td class="p-4 text-center pr-6">' +
                         '<div class="inline-flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200/60">' +
-                            '<button onclick="abrirModal(' + p.id + ', \'ENTRADA\')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition shadow-sm active:scale-95">+ Entrada</button>' +
-                            '<button onclick="abrirModal(' + p.id + ', \'SALIDA\')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition shadow-sm active:scale-95">- Salida</button>' +
+                            '<button onclick="abrirModal(' + p.id + ', \'ENTRADA\')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition shadow-sm active:scale-95">+ Entrada</button>' +
+                            '<button onclick="abrirModal(' + p.id + ', \'SALIDA\')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition shadow-sm active:scale-95">- Salida</button>' +
                             botonesAdmin +
                         '</div>' +
                     '</td>' +
@@ -630,9 +640,9 @@
                     ? '<span class="bg-emerald-100 text-emerald-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">ENTRADA</span>'
                     : '<span class="bg-rose-100 text-rose-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">SALIDA</span>';
 
-                let miniatura = '<div class="h-9 w-9 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center text-xs border border-slate-200"><i class="fa-solid fa-box"></i></div>';
+                let miniatura = '<div class="h-9 w-9 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center text-xs border border-slate-200"><i class="fa-solid fa-box"></i></div>';
                 if (m.producto_imagen && m.producto_imagen.trim() !== '') {
-                    miniatura = '<img src="' + m.producto_imagen + '" class="h-9 w-9 object-cover rounded-xl border border-slate-200 shadow-sm" alt="' + m.producto_nombre + '">';
+                    miniatura = '<img src="' + m.producto_imagen + '" class="h-9 w-9 object-cover rounded-full border border-slate-200 shadow-sm" alt="' + m.producto_nombre + '">';
                 }
 
                 tbody.innerHTML += '<tr class="hover:bg-slate-50/80 transition text-xs">' +
@@ -714,7 +724,7 @@
 
             const btnGuardar = document.getElementById('btn-guardar-prod');
             btnGuardar.disabled = true;
-            btnGuardar.innerText = "Subiendo foto a Cloudinary y guardando...";
+            btnGuardar.innerText = "Subiendo foto y guardando...";
 
             try {
                 const archivoASubir = archivoSeleccionado || (inputArchivo.files.length > 0 ? inputArchivo.files[0] : null);
@@ -732,7 +742,7 @@
                         const uploadData = await uploadRes.json();
                         imagen_url = uploadData.imagen_url;
                     } else {
-                        alert("Advertencia: No se pudo subir la foto a la nube.");
+                        alert("Advertencia: No se pudo subir la foto.");
                     }
                 }
 
