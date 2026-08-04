@@ -32,7 +32,7 @@
             
             <div class="text-center mb-8">
                 <div class="flex justify-center mb-3">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzN8O6A5aU64xWv-xN8o01A1867119" alt="LG Importados Logo" class="h-16 object-contain" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x50?text=LG+IMPORTADOS';">
+                    <img id="logo-login" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzN8O6A5aU64xWv-xN8o01A1867119" alt="LG Importados Logo" class="h-20 object-contain" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x60?text=LG+IMPORTADOS';">
                 </div>
                 <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Gestión de Inventario</h2>
                 <p class="text-xs font-medium text-slate-500 mt-1.5" id="auth-subtitulo">Brindes & Materiales MKT</p>
@@ -99,28 +99,30 @@
         </div>
     </div>
 
-    <!-- HEADER -->
+    <!-- HEADER MÁS ALTO Y CÓMODO PARA LOGO OFICIAL -->
     <header class="glass-header text-white shadow-xl sticky top-0 z-40 border-b border-neutral-800/80">
-        <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-4">
-                <div class="flex items-center space-x-3 bg-white/10 px-3 py-1 rounded-xl backdrop-blur-sm border border-white/10">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzN8O6A5aU64xWv-xN8o01A1867119" alt="LG Importados Logo" class="h-7 object-contain brightness-0 invert">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-4 sm:space-x-5">
+                <!-- LOGO MÁS GRANDE -->
+                <div class="flex items-center bg-white/10 px-3.5 py-2 rounded-2xl backdrop-blur-sm border border-white/15 shadow-sm">
+                    <img id="logo-header" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzN8O6A5aU64xWv-xN8o01A1867119" alt="LG Importados Logo" class="h-10 sm:h-12 w-auto object-contain brightness-0 invert">
                 </div>
-                <div class="h-4 w-px bg-neutral-800"></div>
+                <div class="h-8 w-px bg-neutral-800"></div>
                 <div>
-                    <h1 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-100">
+                    <h1 class="text-sm sm:text-base font-black uppercase tracking-wider text-slate-100">
                         CONTROL DE STOCK BRINDES MKT
                     </h1>
+                    <p class="text-[11px] font-semibold text-slate-400">LG Importados • Sistema de Gestión</p>
                 </div>
             </div>
 
             <div class="flex items-center space-x-3">
-                <div class="flex items-center space-x-2 bg-neutral-900/90 border border-neutral-800 px-3.5 py-1.5 rounded-xl shadow-inner">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <div class="flex items-center space-x-2 bg-neutral-900/90 border border-neutral-800 px-4 py-2 rounded-2xl shadow-inner">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span id="nombre-usuario-display" class="font-bold text-xs uppercase tracking-wider text-slate-200">OPERADOR</span>
                     <span id="badge-rol" class="text-[9px] font-black uppercase px-2 py-0.5 rounded-md bg-slate-800 text-slate-300">OPERADOR</span>
                 </div>
-                <button onclick="cerrarSesion()" class="text-xs text-neutral-400 hover:text-white px-3 py-1.5 rounded-xl hover:bg-neutral-800/80 transition flex items-center gap-1.5 border border-transparent hover:border-neutral-800" title="Cerrar Sesión">
+                <button onclick="cerrarSesion()" class="text-xs text-neutral-400 hover:text-white px-3.5 py-2 rounded-2xl hover:bg-neutral-800/80 transition flex items-center gap-1.5 border border-transparent hover:border-neutral-800" title="Cerrar Sesión">
                     <i class="fa-solid fa-right-from-bracket text-xs"></i>
                     <span class="hidden sm:inline font-medium">Salir</span>
                 </button>
