@@ -19,7 +19,7 @@ def leer_frontend():
         return FileResponse(ruta_html)
     return HTMLResponse("<h2>Error: No se encontró index.html en el servidor.</h2>")
 
-# --- USUARIOS (CADASTRO Y LOGIN) ---
+# --- USUARIOS ---
 
 @app.post("/api/registro", response_model=schemas.UsuarioOut, status_code=status.HTTP_201_CREATED)
 def registrar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
@@ -27,10 +27,13 @@ def registrar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_
     if db_user:
         raise HTTPException(status_code=400, detail="Este correo ya está registrado.")
     
+    rol_asignado = "ADMIN" if usuario.es_admin else "OPERADOR"
+
     nuevo_usuario = models.Usuario(
         nombre=usuario.nombre,
         email=usuario.email,
-        password=usuario.password
+        password=usuario.password,
+        rol=rol_asignado
     )
     db.add(nuevo_usuario)
     db.commit()
@@ -79,6 +82,23 @@ def crear_producto(producto: schemas.ProductoCreate, db: Session = Depends(get_d
     prod_out.alerta_stock_bajo = nuevo_producto.stock_actual <= nuevo_producto.stock_minimo
     return prod_out
 
+@app.put("/api/productos/{producto_id}", response_model=schemas.ProductoOut)
+def editar_producto(producto_id: int, datos: schemas.ProductoUpdate, db: Session = Depends(get_db)):
+    prod = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
+    if not prod:
+        raise HTTPException(status_code=404, detail="Producto no encontrado.")
+    
+    prod.sku = datos.sku
+    prod.nombre = datos.nombre
+    prod.imagen_url = datos.imagen_url
+    prod.stock_minimo = datos.stock_minimo
+    db.commit()
+    db.refresh(prod)
+    
+    prod_out = schemas.ProductoOut.model_validate(prod)
+    prod_out.alerta_stock_bajo = prod.stock_actual <= prod.stock_minimo
+    return prod_out
+
 @app.delete("/api/productos/{producto_id}", status_code=status.HTTP_200_OK)
 def eliminar_producto(producto_id: int, db: Session = Depends(get_db)):
     producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
@@ -120,3 +140,22 @@ def registrar_movimiento(movimiento: schemas.MovimientoCreate, db: Session = Dep
     db.add(nuevo_mov)
     db.commit()
     return {"mensaje": "Movimiento registrado", "nuevo_stock": producto.stock_actual}
+
+@app.put("/api/movimientos/{movimiento_id}")
+def editar_movimiento(movimiento_id: int, datos: schemas.MovimientoUpdate, db: Session = Depends(get_db)):
+    mov = db.query(models.MovimientoInventario).filter(models.MovimientoInventario.id == movimiento_id).first()
+    if not mov:
+        raise HTTPException(status_code=404, detail="Movimiento no encontrado.")
+    
+    if datos.usuario: mov.usuario = datos.usuario
+    if datos.notas is not None: mov.notas = datos.notas
+    if datos.cantidad is not None and datos.cantidad != mov.cantidad:
+        diff = datos.cantidad - mov.cantidad
+        prod = db.query(models.Producto).filter(models.Producto.id == mov.producto_id).first()
+        if prod:
+            if mov.tipo == "ENTRADA": prod.stock_actual += diff
+            elif mov.tipo == "SALIDA": prod.stock_actual -= diff
+        mov.cantidad = datos.cantidad
+        
+    db.commit()
+    return {"mensaje": "Movimiento actualizado con éxito"}
