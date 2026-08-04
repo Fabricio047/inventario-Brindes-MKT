@@ -4,10 +4,10 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 
 from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import FileResponse, HTMLResponse
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
+import bcrypt
 import jwt
 import cloudinary
 import cloudinary.uploader
@@ -19,9 +19,8 @@ from database import engine, get_db
 # Configuración de Claves JWT y Hasher
 SECRET_KEY = "LG_IMPORTADOS_SECRET_KEY_PROD_2026"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 # 24 horas de validez
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 # 24 horas
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/login")
 
 # Configurar Cloudinary con tus claves oficiales
@@ -37,13 +36,18 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Control de Stock - Brindes MKT")
 
-# --- FUNCIONES DE SEGURIDAD ---
+# --- FUNCIONES DE SEGURIDAD (BCRYPT DIRECTO) ---
 
 def obtener_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    pwd_bytes = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(pwd_bytes, salt).decode('utf-8')
 
 def verificar_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+    except Exception:
+        return False
 
 def crear_token_acceso(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
@@ -250,7 +254,7 @@ def registrar_movimiento(movimiento: schemas.MovimientoCreate, db: Session = Dep
         producto_id=movimiento.producto_id,
         tipo=movimiento.tipo,
         cantidad=movimiento.cantidad,
-        usuario=usuario.nombre, # Usar nombre autenticado directamente del token
+        usuario=usuario.nombre,
         notas=movimiento.notas
     )
     db.add(nuevo_mov)
