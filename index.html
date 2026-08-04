@@ -320,6 +320,18 @@
         </div>
     </div>
 
+    <!-- MODAL ZOOM DE IMAGEN (LIGHTBOX) -->
+    <div id="modal-zoom-imagen" onclick="cerrarZoomImagen()" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center hidden z-50 p-4 cursor-pointer">
+        <div class="relative max-w-3xl max-h-[85vh] p-2 bg-white/10 rounded-3xl border border-white/20 shadow-2xl backdrop-blur-lg flex flex-col items-center">
+            <button onclick="cerrarZoomImagen()" class="absolute -top-4 -right-4 bg-white text-slate-900 w-9 h-9 rounded-full font-bold shadow-lg flex items-center justify-center hover:scale-110 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <img id="img-zoom-src" src="" class="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-md" alt="Zoom Producto">
+            <h4 id="img-zoom-titulo" class="text-white font-bold text-base mt-3 tracking-wide text-center"></h4>
+        </div>
+        <p class="text-slate-400 text-xs mt-4 font-semibold"><i class="fa-solid fa-circle-info mr-1"></i> Haz clic en cualquier lugar o presiona Esc para cerrar</p>
+    </div>
+
     <script>
         const API_URL = "";
         let productosGlobales = [];
@@ -330,6 +342,11 @@
         if (usuarioSesion) {
             ocultarAuth();
         }
+
+        // Cierre con la tecla ESC para el Zoom
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') cerrarZoomImagen();
+        });
 
         function mostrarCadastro() {
             document.getElementById('form-login').classList.add('hidden');
@@ -500,9 +517,14 @@
                     ? `<span class="bg-rose-50 text-rose-600 border border-rose-200 text-[11px] font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> Stock Bajo</span>`
                     : `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[11px] font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-1"><i class="fa-solid fa-check"></i> Normal</span>`;
 
-                /* MINIATURAS AMPLIADAS A 64x64 PX (h-16 w-16) */
+                /* FOTO CON ZOOM HACER CLIC */
                 const miniatura = p.imagen_url && p.imagen_url.trim() !== ""
-                    ? `<img src="${p.imagen_url}" class="h-16 w-16 object-cover rounded-2xl border border-slate-200/90 shadow-sm bg-white p-0.5" alt="${p.nombre}" onerror="this.onerror=null; this.src='https://via.placeholder.com/64?text=Foto';">`
+                    ? `<div class="relative group cursor-pointer" onclick="abrirZoomImagen('${p.imagen_url}', '${p.nombre}')" title="Haz clic para ampliar">
+                        <img src="${p.imagen_url}" class="h-16 w-16 object-cover rounded-2xl border border-slate-200/90 shadow-sm bg-white p-0.5 group-hover:scale-105 group-hover:shadow-md transition duration-200" alt="${p.nombre}" onerror="this.onerror=null; this.src='https://via.placeholder.com/64?text=Foto';">
+                        <div class="absolute inset-0 bg-black/30 rounded-2xl opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i>
+                        </div>
+                       </div>`
                     : `<div class="h-16 w-16 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center text-lg border border-slate-200/90 shadow-inner"><i class="fa-solid fa-image"></i></div>`;
 
                 let botonesAdmin = '';
@@ -530,6 +552,16 @@
                     </tr>
                 `;
             });
+        }
+
+        function abrirZoomImagen(url, nombre) {
+            document.getElementById('img-zoom-src').src = url;
+            document.getElementById('img-zoom-titulo').innerText = nombre;
+            document.getElementById('modal-zoom-imagen').classList.remove('hidden');
+        }
+
+        function cerrarZoomImagen() {
+            document.getElementById('modal-zoom-imagen').classList.add('hidden');
         }
 
         function renderizarMovimientos(movimientos) {
