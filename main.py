@@ -8,7 +8,28 @@ import models
 import schemas
 from database import engine, get_db
 
+# Crear tablas
 models.Base.metadata.create_all(bind=engine)
+
+# Crear Admin por defecto al iniciar
+def crear_admin_por_defecto():
+    db = Session(bind=engine)
+    try:
+        admin_email = "admin@lgimportados.com"
+        admin_existente = db.query(models.Usuario).filter(models.Usuario.email == admin_email).first()
+        if not admin_existente:
+            admin_maestro = models.Usuario(
+                nombre="ADMINISTRADOR",
+                email=admin_email,
+                password="admin123*",
+                rol="ADMIN"
+            )
+            db.add(admin_maestro)
+            db.commit()
+    finally:
+        db.close()
+
+crear_admin_por_defecto()
 
 app = FastAPI(title="Control de Stock - Brindes MKT")
 
@@ -27,13 +48,11 @@ def registrar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_
     if db_user:
         raise HTTPException(status_code=400, detail="Este correo ya está registrado.")
     
-    rol_asignado = "ADMIN" if usuario.es_admin else "OPERADOR"
-
     nuevo_usuario = models.Usuario(
         nombre=usuario.nombre,
         email=usuario.email,
         password=usuario.password,
-        rol=rol_asignado
+        rol="OPERADOR"
     )
     db.add(nuevo_usuario)
     db.commit()
