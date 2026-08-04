@@ -161,7 +161,7 @@
             </div>
         </div>
 
-        <!-- FORMULARIO CREAR PRODUCTO (EXCLUSIVO SOLO PARA ADMIN) -->
+        <!-- FORMULARIO CREAR PRODUCTO (SOLO ADMIN) -->
         <div id="seccion-crear-producto" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 hidden">
             <h2 class="text-base font-extrabold text-slate-900 mb-5 flex items-center gap-2 tracking-tight">
                 <i class="fa-solid fa-plus-circle text-slate-900"></i> Registrar Nuevo Producto <span class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-md border border-indigo-200">Exclusivo Admin</span>
@@ -172,8 +172,8 @@
                     <input id="sku" type="text" placeholder="Ej. PEN-001" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-mono">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1.5">URL Foto (Opcional)</label>
-                    <input id="imagen_url" type="text" placeholder="https://..." class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Foto del Producto (PC)</label>
+                    <input id="imagen_file" type="file" accept="image/*" class="w-full bg-slate-50/70 border border-slate-200 p-2 rounded-xl text-xs focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1.5">Nombre del producto *</label>
@@ -294,6 +294,7 @@
         <div class="bg-white p-7 rounded-3xl shadow-2xl w-full max-w-md border border-slate-100 relative">
             <h3 class="text-lg font-extrabold text-slate-900 mb-5">Editar Producto</h3>
             <input id="edit-prod-id" type="hidden">
+            <input id="edit-prod-imagen-url" type="hidden">
             <div class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1.5">Código / SKU</label>
@@ -304,8 +305,8 @@
                     <input id="edit-prod-nombre" type="text" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-bold">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1.5">URL Foto</label>
-                    <input id="edit-prod-imagen" type="text" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs">
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Cambiar Foto (Opcional)</label>
+                    <input id="edit-prod-file" type="file" accept="image/*" class="w-full border border-slate-200 p-2 rounded-xl text-xs">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Mínimo (Alerta)</label>
@@ -610,8 +611,9 @@
             document.getElementById('edit-prod-id').value = id;
             document.getElementById('edit-prod-sku').value = sku;
             document.getElementById('edit-prod-nombre').value = nombre;
-            document.getElementById('edit-prod-imagen').value = imagen;
+            document.getElementById('edit-prod-imagen-url').value = imagen;
             document.getElementById('edit-prod-minimo').value = minimo;
+            document.getElementById('edit-prod-file').value = '';
             document.getElementById('modal-editar-producto').classList.remove('hidden');
         }
 
@@ -619,12 +621,34 @@
             document.getElementById('modal-editar-producto').classList.add('hidden');
         }
 
+        async function subirArchivoAlServidor(inputElement) {
+            if (inputElement.files && inputElement.files[0]) {
+                const formData = new FormData();
+                formData.append('file', inputElement.files[0]);
+                const res = await fetch(`${API_URL}/api/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    return data.imagen_url;
+                }
+            }
+            return null;
+        }
+
         async function guardarEdicionProducto() {
             const id = document.getElementById('edit-prod-id').value;
             const sku = document.getElementById('edit-prod-sku').value.trim();
             const nombre = document.getElementById('edit-prod-nombre').value.trim();
-            const imagen_url = document.getElementById('edit-prod-imagen').value.trim();
+            let imagen_url = document.getElementById('edit-prod-imagen-url').value;
             const stock_minimo = parseInt(document.getElementById('edit-prod-minimo').value) || 0;
+
+            const fileInput = document.getElementById('edit-prod-file');
+            if (fileInput.files.length > 0) {
+                const nuevaUrl = await subirArchivoAlServidor(fileInput);
+                if (nuevaUrl) imagen_url = nuevaUrl;
+            }
 
             try {
                 const res = await fetch(`${API_URL}/api/productos/${id}`, {
@@ -667,13 +691,18 @@
         async function crearProducto() {
             const sku = document.getElementById('sku').value.trim();
             const nombre = document.getElementById('nombre').value.trim();
-            const imagen_url = document.getElementById('imagen_url').value.trim();
+            const fileInput = document.getElementById('imagen_file');
             const stock_inicial = parseInt(document.getElementById('stock').value) || 0;
             const stock_minimo = parseInt(document.getElementById('minimo').value) || 0;
 
             if (!sku || !nombre) {
                 alert("Por favor completa el Código / SKU y el Nombre del producto.");
                 return;
+            }
+
+            let imagen_url = "";
+            if (fileInput.files.length > 0) {
+                imagen_url = await subirArchivoAlServidor(fileInput) || "";
             }
 
             try {
@@ -686,7 +715,7 @@
                 if (res.ok) {
                     document.getElementById('sku').value = '';
                     document.getElementById('nombre').value = '';
-                    document.getElementById('imagen_url').value = '';
+                    document.getElementById('imagen_file').value = '';
                     document.getElementById('stock').value = '';
                     document.getElementById('minimo').value = '';
                     await cargarTodo();
