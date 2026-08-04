@@ -29,3 +29,11 @@ class MovimientoInventario(Base):
     fecha = Column(DateTime, default=datetime.utcnow)
 
     producto = relationship("Producto", back_populates="movimientos")
+
+class Usuario(Base):
+    __tablename__ = "usuarios"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=False)
+    password = Column(String, nullable=False)
