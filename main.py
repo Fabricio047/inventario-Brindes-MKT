@@ -1,6 +1,5 @@
 import os
 import io
-import shutil
 from datetime import datetime, timedelta
 from typing import List, Optional
 
@@ -18,14 +17,12 @@ import models
 import schemas
 from database import engine, get_db
 
-# Configuración de Claves JWT y Hasher
 SECRET_KEY = "LG_IMPORTADOS_SECRET_KEY_PROD_2026"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 # 24 horas
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/login")
 
-# Configurar Cloudinary con tus claves oficiales
 cloudinary.config( 
   cloud_name = "uozsov2p", 
   api_key = "759287856464937", 
@@ -33,12 +30,9 @@ cloudinary.config(
   secure = True
 )
 
-# Crear tablas
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Control de Stock - Brindes MKT")
-
-# --- FUNCIONES DE SEGURIDAD ---
+app = FastAPI(title="Control de Stock - MKT")
 
 def obtener_password_hash(password: str) -> str:
     pwd_bytes = password.encode('utf-8')
@@ -47,10 +41,8 @@ def obtener_password_hash(password: str) -> str:
 
 def verificar_password(plain_password: str, hashed_password: str) -> bool:
     try:
-        # Verificar con bcrypt
         if hashed_password.startswith("$2b$") or hashed_password.startswith("$2a$"):
             return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
-        # Comparación fallback por si la clave antigua quedó en texto plano
         return plain_password == hashed_password
     except Exception:
         return False
@@ -69,13 +61,13 @@ def obtener_usuario_actual(token: str = Depends(oauth2_scheme), db: Session = De
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        nombre: str = payload.get("sub")
+        if nombre is None:
             raise exception_unauthorized
     except jwt.PyJWTError:
         raise exception_unauthorized
 
-    usuario = db.query(models.Usuario).filter(models.Usuario.email == email).first()
+    usuario = db.query(models.Usuario).filter(models.Usuario.nombre == nombre).first()
     if usuario is None:
         raise exception_unauthorized
     return usuario
@@ -88,25 +80,23 @@ def verificar_admin(usuario_actual: models.Usuario = Depends(obtener_usuario_act
         )
     return usuario_actual
 
-# Crear / Actualizar Admin por defecto al iniciar
 def garantizar_admin_maestro():
     db = Session(bind=engine)
     try:
-        admin_email = "admin@lgimportados.com"
+        admin_nombre = "admin"
         admin_pass_raw = "admin123*"
-        admin_existente = db.query(models.Usuario).filter(models.Usuario.email == admin_email).first()
+        admin_existente = db.query(models.Usuario).filter(models.Usuario.nombre == admin_nombre).first()
         
         if not admin_existente:
             admin_maestro = models.Usuario(
-                nombre="ADMINISTRADOR",
-                email=admin_email,
+                nombre=admin_nombre,
+                email="admin@local.com",
                 password=obtener_password_hash(admin_pass_raw),
                 rol="ADMIN"
             )
             db.add(admin_maestro)
             db.commit()
         else:
-            # Asegurar que la contraseña esté correctamente hasheada y con rol ADMIN
             admin_existente.password = obtener_password_hash(admin_pass_raw)
             admin_existente.rol = "ADMIN"
             db.commit()
@@ -124,7 +114,6 @@ def leer_frontend():
         return FileResponse(ruta_html)
     return HTMLResponse("<h2>Error: No se encontró index.html en el servidor.</h2>")
 
-# Endpoint para subir imágenes directamente a Cloudinary (Protegido Admin)
 @app.post("/api/upload")
 async def subir_imagen(file: UploadFile = File(...), admin: models.Usuario = Depends(verificar_admin)):
     try:
@@ -133,17 +122,18 @@ async def subir_imagen(file: UploadFile = File(...), admin: models.Usuario = Dep
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al subir imagen: {str(e)}")
 
-# --- USUARIOS Y LOGIN CON JWT ---
+# --- REGISTRO Y LOGIN SÓLO CON NOMBRE ---
 
 @app.post("/api/registro", response_model=schemas.UsuarioOut, status_code=status.HTTP_201_CREATED)
 def registrar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
-    db_user = db.query(models.Usuario).filter(models.Usuario.email == usuario.email).first()
+    nombre_limpio = usuario.nombre.strip().lower()
+    db_user = db.query(models.Usuario).filter(models.Usuario.nombre.ilike(nombre_limpio)).first()
     if db_user:
-        raise HTTPException(status_code=400, detail="Este correo ya está registrado.")
+        raise HTTPException(status_code=400, detail="Este nombre de usuario ya está registrado.")
     
     nuevo_usuario = models.Usuario(
-        nombre=usuario.nombre,
-        email=usuario.email,
+        nombre=usuario.nombre.strip(),
+        email=f"{nombre_limpio}@local.com",
         password=obtener_password_hash(usuario.password),
         rol="OPERADOR"
     )
@@ -154,18 +144,19 @@ def registrar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_
 
 @app.post("/api/login")
 def login_usuario(creds: schemas.LoginRequest, db: Session = Depends(get_db)):
-    usuario = db.query(models.Usuario).filter(models.Usuario.email == creds.email).first()
-    if not usuario or not verificar_password(creds.password, usuario.password):
-        raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos.")
+    nombre_limpio = creds.nombre.strip()
+    usuario = db.query(models.Usuario).filter(models.Usuario.nombre.ilike(nombre_limpio)).first()
     
-    access_token = crear_token_acceso(data={"sub": usuario.email, "rol": usuario.rol})
+    if not usuario or not verificar_password(creds.password, usuario.password):
+        raise HTTPException(status_code=401, detail="Usuario o contraseña incorrectos.")
+    
+    access_token = crear_token_acceso(data={"sub": usuario.nombre, "rol": usuario.rol})
     return {
         "access_token": access_token, 
         "token_type": "bearer",
         "usuario": {
             "id": usuario.id,
             "nombre": usuario.nombre,
-            "email": usuario.email,
             "rol": usuario.rol
         }
     }
@@ -275,25 +266,6 @@ def registrar_movimiento(movimiento: schemas.MovimientoCreate, db: Session = Dep
     db.add(nuevo_mov)
     db.commit()
     return {"mensaje": "Movimiento registrado", "nuevo_stock": producto.stock_actual}
-
-@app.put("/api/movimientos/{movimiento_id}")
-def editar_movimiento(movimiento_id: int, datos: schemas.MovimientoUpdate, db: Session = Depends(get_db), admin: models.Usuario = Depends(verificar_admin)):
-    mov = db.query(models.MovimientoInventario).filter(models.MovimientoInventario.id == movimiento_id).first()
-    if not mov:
-        raise HTTPException(status_code=404, detail="Movimiento no encontrado.")
-    
-    if datos.usuario: mov.usuario = datos.usuario
-    if datos.notas is not None: mov.notas = datos.notas
-    if datos.cantidad is not None and datos.cantidad != mov.cantidad:
-        diff = datos.cantidad - mov.cantidad
-        prod = db.query(models.Producto).filter(models.Producto.id == mov.producto_id).first()
-        if prod:
-            if mov.tipo == "ENTRADA": prod.stock_actual += diff
-            elif mov.tipo == "SALIDA": prod.stock_actual -= diff
-        mov.cantidad = datos.cantidad
-        
-    db.commit()
-    return {"mensaje": "Movimiento actualizado con éxito"}
 
 # --- EXPORTAR EXCEL ---
 
