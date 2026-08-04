@@ -161,36 +161,47 @@
             </div>
         </div>
 
-        <!-- FORMULARIO CREAR PRODUCTO -->
-        <div id="seccion-crear-producto" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 hidden">
+        <!-- FORMULARIO REGISTRAR PRODUCTO CON DRAG & DROP -->
+        <div id="seccion-crear-producto" class="bg-white p-7 rounded-3xl shadow-sm border border-slate-200/80 max-w-xl mx-auto hidden">
             <h2 class="text-base font-extrabold text-slate-900 mb-5 flex items-center gap-2 tracking-tight">
-                <i class="fa-solid fa-plus-circle text-slate-900"></i> Registrar Nuevo Producto <span class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-md border border-indigo-200">Exclusivo Admin</span>
+                <i class="fa-solid fa-plus-circle text-indigo-600"></i> Registrar Nuevo Producto
             </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Código / SKU *</label>
-                    <input id="sku" type="text" placeholder="Ej. PEN-001" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-mono">
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">Código / SKU *</label>
+                        <input id="sku" type="text" placeholder="Ej. PEN-001" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">Nombre del Producto *</label>
+                        <input id="nombre" type="text" placeholder="Ej. Lápiz Brindes" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                    </div>
                 </div>
+
+                <!-- ZONA DE ARRASTRE DE IMAGEN (DRAG & DROP) -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Foto desde Computadora</label>
-                    <input id="archivo_imagen" type="file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 transition">
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Foto del Producto</label>
+                    <div id="drop-zone" onclick="document.getElementById('archivo_imagen').click()" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50/50 hover:bg-indigo-50/30 p-6 rounded-2xl text-center cursor-pointer transition flex flex-col items-center justify-center gap-2">
+                        <i id="drop-icon" class="fa-solid fa-cloud-arrow-up text-2xl text-slate-400"></i>
+                        <p id="drop-text" class="text-xs font-semibold text-slate-600">Arrastra una imagen aquí o <span class="text-indigo-600 underline">haz clic para examinar</span></p>
+                        <input id="archivo_imagen" type="file" accept="image/*" class="hidden" onchange="mostrarVistaPrevia(this.files[0])">
+                        <img id="preview-img" class="h-24 w-24 object-cover rounded-xl shadow-md hidden border border-slate-200 mt-1">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Nombre del producto *</label>
-                    <input id="nombre" type="text" placeholder="Ej. Lápiz Brindes" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Inicial</label>
+                        <input id="stock" type="number" placeholder="15" min="0" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Mínimo (Alerta)</label>
+                        <input id="minimo" type="number" placeholder="5" min="0" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-bold">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Inicial</label>
-                    <input id="stock" type="number" placeholder="0" min="0" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Mínimo (Alerta)</label>
-                    <input id="minimo" type="number" placeholder="5" min="0" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
-                </div>
-            </div>
-            <div class="mt-5 flex justify-end">
-                <button id="btn-guardar-prod" onclick="crearProducto()" class="bg-slate-900 hover:bg-black text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl shadow-md transition active:scale-[0.98] flex items-center gap-2">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Producto
+
+                <button id="btn-guardar-prod" onclick="crearProducto()" class="w-full bg-slate-900 hover:bg-black text-white font-bold text-xs uppercase tracking-wider py-3.5 rounded-xl shadow-md transition active:scale-[0.98] flex items-center justify-center gap-2 mt-2">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Producto
                 </button>
             </div>
         </div>
@@ -310,12 +321,58 @@
         let productosGlobales = [];
         let productoSeleccionadoId = null;
         let tipoMovimientoSeleccionado = null;
+        let archivoSeleccionado = null;
         
         let tokenSesion = localStorage.getItem('token_sesion') || null;
         let usuarioSesion = JSON.parse(localStorage.getItem('usuario_sesion')) || null;
 
         if (tokenSesion && usuarioSesion) {
             ocultarAuth();
+        }
+
+        // --- CONFIGURACIÓN DE DRAG & DROP ---
+        const dropZone = document.getElementById('drop-zone');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('bg-indigo-100/50', 'border-indigo-600'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('bg-indigo-100/50', 'border-indigo-600'), false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files && files.length > 0) {
+                archivoSeleccionado = files[0];
+                document.getElementById('archivo_imagen').files = files;
+                mostrarVistaPrevia(files[0]);
+            }
+        });
+
+        function mostrarVistaPrevia(file) {
+            if (file) {
+                archivoSeleccionado = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('preview-img');
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                    document.getElementById('drop-icon').classList.add('hidden');
+                    document.getElementById('drop-text').innerHTML = '<span class="text-emerald-600 font-bold">¡Imagen lista!</span> Haz clic para cambiar';
+                }
+                reader.readAsDataURL(file);
+            }
         }
 
         window.addEventListener('keydown', function(e) {
@@ -657,12 +714,14 @@
 
             const btnGuardar = document.getElementById('btn-guardar-prod');
             btnGuardar.disabled = true;
-            btnGuardar.innerText = "Subiendo imagen y guardando...";
+            btnGuardar.innerText = "Subiendo foto a Cloudinary y guardando...";
 
             try {
-                if (inputArchivo.files.length > 0) {
+                const archivoASubir = archivoSeleccionado || (inputArchivo.files.length > 0 ? inputArchivo.files[0] : null);
+                
+                if (archivoASubir) {
                     const formData = new FormData();
-                    formData.append("file", inputArchivo.files[0]);
+                    formData.append("file", archivoASubir);
 
                     const uploadRes = await fetchAuth(API_URL + '/api/upload', {
                         method: 'POST',
@@ -673,7 +732,7 @@
                         const uploadData = await uploadRes.json();
                         imagen_url = uploadData.imagen_url;
                     } else {
-                        alert("Advertencia: No se pudo subir la foto a Cloudinary.");
+                        alert("Advertencia: No se pudo subir la foto a la nube.");
                     }
                 }
 
@@ -689,6 +748,12 @@
                     document.getElementById('stock').value = '';
                     document.getElementById('minimo').value = '';
                     inputArchivo.value = '';
+                    archivoSeleccionado = null;
+                    
+                    document.getElementById('preview-img').classList.add('hidden');
+                    document.getElementById('drop-icon').classList.remove('hidden');
+                    document.getElementById('drop-text').innerHTML = 'Arrastra una imagen aquí o <span class="text-indigo-600 underline">haz clic para examinar</span>';
+
                     await cargarTodo();
                 } else {
                     const err = await res.json();
@@ -697,7 +762,7 @@
             } catch (e) { alert("Error de red."); }
             finally {
                 btnGuardar.disabled = false;
-                btnGuardar.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Producto';
+                btnGuardar.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Producto';
             }
         }
 
