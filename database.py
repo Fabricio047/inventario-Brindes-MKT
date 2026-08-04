@@ -1,16 +1,24 @@
+import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-# Base de datos SQLite local para pruebas rápidas
-SQLALCHEMY_DATABASE_URL = "sqlite:///./inventario.db"
+# Detectar URL de PostgreSQL desde las Variables de Entorno de Railway
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+# Si la URL viene de Railway (postgresql://), SQLAlchemy exige formato 'postgresql://'
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# Si no hay variable (desarrollo local), usar SQLite como respaldo
+if not DATABASE_URL:
+    DATABASE_URL = "sqlite:///./sql_app.db"
+    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
-
 
 def get_db():
     db = SessionLocal()
