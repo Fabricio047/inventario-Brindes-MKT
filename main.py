@@ -1,7 +1,9 @@
 import os
-from typing import List
-from fastapi import FastAPI, Depends, HTTPException, status
+import shutil
+from typing import List, Optional
+from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile, Form
 from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 import models
@@ -10,6 +12,15 @@ from database import engine, get_db
 
 # Crear tablas
 models.Base.metadata.create_all(bind=engine)
+
+# Carpetas de imágenes cargadas
+UPLOADS_DIR = os.path.join(os.path.dirname(__file__), "uploads")
+os.makedirs(UPLOADS_DIR, exist_ok=True)
+
+app = FastAPI(title="Control de Stock - Brindes MKT")
+
+# Servir carpeta de imágenes
+app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 # Crear Admin por defecto al iniciar
 def crear_admin_por_defecto():
@@ -31,14 +42,27 @@ def crear_admin_por_defecto():
 
 crear_admin_por_defecto()
 
-app = FastAPI(title="Control de Stock - Brindes MKT")
-
 @app.get("/")
 def leer_frontend():
     ruta_html = os.path.join(os.path.dirname(__file__), "index.html")
     if os.path.exists(ruta_html):
         return FileResponse(ruta_html)
     return HTMLResponse("<h2>Error: No se encontró index.html en el servidor.</h2>")
+
+# Endpoint para subir imágenes desde la computadora
+@app.post("/api/upload")
+async def subir_imagen(file: UploadFile = File(...)):
+    try:
+        # Generar nombre único para el archivo
+        nombre_archivo = f"{int(os.urandom(4).hex(), 16)}_{file.filename.replace(' ', '_')}"
+        ruta_guardado = os.path.join(UPLOADS_DIR, nombre_archivo)
+        
+        with open(ruta_guardado, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+            
+        return {"imagen_url": f"/uploads/{nombre_archivo}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Error al guardar la imagen en el servidor.")
 
 # --- USUARIOS ---
 
