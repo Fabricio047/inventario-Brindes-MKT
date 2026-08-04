@@ -1,26 +1,27 @@
 import os
-import shutil
-from typing import List, Optional
+from typing import List
 from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
+import cloudinary
+import cloudinary.uploader
 
 import models
 import schemas
 from database import engine, get_db
 
+# Configurar Cloudinary con tus datos
+cloudinary.config( 
+  cloud_name = "uozsov2p", 
+  api_key = "TU_API_KEY", 
+  api_secret = "TU_API_SECRET",
+  secure = True
+)
+
 # Crear tablas
 models.Base.metadata.create_all(bind=engine)
 
-# Carpetas de imágenes cargadas
-UPLOADS_DIR = os.path.join(os.path.dirname(__file__), "uploads")
-os.makedirs(UPLOADS_DIR, exist_ok=True)
-
 app = FastAPI(title="Control de Stock - Brindes MKT")
-
-# Servir carpeta de imágenes
-app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 # Crear Admin por defecto al iniciar
 def crear_admin_por_defecto():
@@ -49,19 +50,18 @@ def leer_frontend():
         return FileResponse(ruta_html)
     return HTMLResponse("<h2>Error: No se encontró index.html en el servidor.</h2>")
 
-# Endpoint para subir imágenes desde la computadora
+# Endpoint para subir imágenes directamente a Cloudinary
 @app.post("/api/upload")
 async def subir_imagen(file: UploadFile = File(...)):
     try:
-        nombre_archivo = f"{int(os.urandom(4).hex(), 16)}_{file.filename.replace(' ', '_')}"
-        ruta_guardado = os.path.join(UPLOADS_DIR, nombre_archivo)
-        
-        with open(ruta_guardado, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-            
-        return {"imagen_url": f"/uploads/{nombre_archivo}"}
+        # Subida directa a la nube de Cloudinary
+        respuesta = cloudinary.uploader.upload(
+            file.file, 
+            folder="brindes_mkt"
+        )
+        return {"imagen_url": respuesta.get("secure_url")}
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Error al guardar la imagen en el servidor.")
+        raise HTTPException(status_code=500, detail=f"Error al subir la imagen a la nube: {str(e)}")
 
 # --- USUARIOS ---
 
