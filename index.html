@@ -6,9 +6,15 @@
     <title>CONTROL DE STOCK DE BRINDES MKT - LG IMPORTADOS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- TIPOGRAFÍA INTER DE GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+        }
         .glass-header { background: rgba(10, 10, 10, 0.94); backdrop-filter: blur(14px); }
         .card-depth { 
             border-radius: 18px; 
@@ -25,7 +31,6 @@
             <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900"></div>
             
             <div class="text-center mb-8">
-                <!-- LOGO OFICIAL EN LOGIN -->
                 <div class="flex justify-center mb-3">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzN8O6A5aU64xWv-xN8o01A1867119" alt="LG Importados Logo" class="h-16 object-contain" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x50?text=LG+IMPORTADOS';">
                 </div>
@@ -98,7 +103,6 @@
     <header class="glass-header text-white shadow-xl sticky top-0 z-40 border-b border-neutral-800/80">
         <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                <!-- LOGO OFICIAL EN HEADER -->
                 <div class="flex items-center space-x-3 bg-white/10 px-3 py-1 rounded-xl backdrop-blur-sm border border-white/10">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzN8O6A5aU64xWv-xN8o01A1867119" alt="LG Importados Logo" class="h-7 object-contain brightness-0 invert">
                 </div>
@@ -126,7 +130,7 @@
 
     <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
 
-        <!-- DASHBOARD KPIS CON PROFUNDIDAD -->
+        <!-- DASHBOARD KPIS -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-white p-5 card-depth flex items-center justify-between">
                 <div>
@@ -166,7 +170,7 @@
             </div>
         </div>
 
-        <!-- FORMULARIO REGISTRAR PRODUCTO CON PROFUNDIDAD Y DRAG & DROP -->
+        <!-- FORMULARIO REGISTRAR PRODUCTO CON DRAG & DROP -->
         <div id="seccion-crear-producto" class="bg-white p-7 card-depth max-w-xl mx-auto hidden">
             <h2 class="text-base font-extrabold text-slate-900 mb-5 flex items-center gap-2 tracking-tight">
                 <i class="fa-solid fa-plus-circle text-indigo-600"></i> Registrar Nuevo Producto
@@ -211,7 +215,7 @@
             </div>
         </div>
 
-        <!-- TABLA DE PRODUCTOS CON PROFUNDIDAD Y MÁS VIDA -->
+        <!-- TABLA DE PRODUCTOS -->
         <div class="bg-white card-depth overflow-hidden">
             <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div>
@@ -254,7 +258,7 @@
             </div>
         </div>
 
-        <!-- HISTORIAL DE MOVIMIENTOS CON PROFUNDIDAD -->
+        <!-- HISTORIAL DE MOVIMIENTOS -->
         <div id="seccion-movimientos-admin" class="bg-white card-depth overflow-hidden hidden">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center">
                 <div>
@@ -568,7 +572,7 @@
             tbody.innerHTML = '';
 
             if (!productos || productos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-slate-400 text-xs">No hay productos en el inventario.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-slate-400 text-xs font-medium">No hay productos en el inventario.</td></tr>';
                 return;
             }
 
@@ -599,10 +603,10 @@
                 tbody.innerHTML += '<tr class="hover:bg-slate-50/80 transition items-center">' +
                     '<td class="p-4 pl-6">' + miniatura + '</td>' +
                     '<td class="p-4">' +
-                        '<p class="font-bold text-slate-900 text-sm">' + p.nombre + '</p>' +
+                        '<p class="font-bold text-slate-900 text-sm tracking-tight">' + p.nombre + '</p>' +
                         '<p class="font-mono text-[11px] text-slate-400 font-medium">' + p.sku + '</p>' +
                     '</td>' +
-                    '<td class="p-4 font-black text-slate-800 text-base">' + p.stock_actual + '</td>' +
+                    '<td class="p-4 font-extrabold text-slate-800 text-base">' + p.stock_actual + '</td>' +
                     '<td class="p-4">' + badgeEstado + '</td>' +
                     '<td class="p-4 text-center pr-6">' +
                         '<div class="inline-flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200/60">' +
@@ -630,7 +634,7 @@
             tbody.innerHTML = '';
 
             if (!movimientos || movimientos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400 text-xs">No hay movimientos registrados.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400 text-xs font-medium">No hay movimientos registrados.</td></tr>';
                 return;
             }
 
