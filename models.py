@@ -3,6 +3,15 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
 
+class Usuario(Base):
+    __tablename__ = "usuarios"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=False)
+    password = Column(String, nullable=False)
+    rol = Column(String, default="OPERADOR")  # ROL: 'ADMIN' o 'OPERADOR'
+
 class Producto(Base):
     __tablename__ = "productos"
 
@@ -22,18 +31,10 @@ class MovimientoInventario(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     producto_id = Column(Integer, ForeignKey("productos.id"), nullable=False)
-    tipo = Column(String, nullable=False)  # ENTRADA o SALIDA
+    tipo = Column(String, nullable=False)
     cantidad = Column(Integer, nullable=False)
     usuario = Column(String, nullable=False)
     notas = Column(String, nullable=True)
     fecha = Column(DateTime, default=datetime.utcnow)
 
     producto = relationship("Producto", back_populates="movimientos")
-
-class Usuario(Base):
-    __tablename__ = "usuarios"
-
-    id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String, nullable=False)
-    email = Column(String, unique=True, index=True, nullable=False)
-    password = Column(String, nullable=False)
