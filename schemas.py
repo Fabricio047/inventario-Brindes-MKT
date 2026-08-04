@@ -6,11 +6,13 @@ class UsuarioCreate(BaseModel):
     nombre: str
     email: str
     password: str
+    es_admin: bool = False  # Checkbox de selección en el registro
 
 class UsuarioOut(BaseModel):
     id: int
     nombre: str
     email: str
+    rol: str
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -29,6 +31,9 @@ class ProductoBase(BaseModel):
 class ProductoCreate(ProductoBase):
     stock_inicial: int = 0
 
+class ProductoUpdate(ProductoBase):
+    pass
+
 class ProductoOut(ProductoBase):
     id: int
     stock_actual: int
@@ -41,6 +46,11 @@ class MovimientoCreate(BaseModel):
     tipo: str
     cantidad: int
     usuario: str
+    notas: Optional[str] = None
+
+class MovimientoUpdate(BaseModel):
+    cantidad: Optional[int] = None
+    usuario: Optional[str] = None
     notas: Optional[str] = None
 
 class MovimientoOut(BaseModel):
