@@ -2,6 +2,22 @@ from typing import Optional, List
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
+class UsuarioCreate(BaseModel):
+    nombre: str
+    email: str
+    password: str
+
+class UsuarioOut(BaseModel):
+    id: int
+    nombre: str
+    email: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
 class ProductoBase(BaseModel):
     sku: str
     nombre: str
@@ -22,7 +38,7 @@ class ProductoOut(ProductoBase):
 
 class MovimientoCreate(BaseModel):
     producto_id: int
-    tipo: str  # ENTRADA o SALIDA
+    tipo: str
     cantidad: int
     usuario: str
     notas: Optional[str] = None
