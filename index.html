@@ -235,7 +235,7 @@
             </div>
         </div>
 
-        <!-- HISTORIAL DE MOVIMIENTOS (EXCLUSIVO PARA ADMIN) -->
+       <!-- HISTORIAL DE MOVIMIENTOS (EXCLUSIVO PARA ADMIN) -->
         <div id="seccion-movimientos-admin" class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden hidden">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center">
                 <div>
@@ -250,6 +250,7 @@
                     <thead>
                         <tr class="bg-slate-50/80 text-slate-400 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100">
                             <th class="p-4 pl-6">Fecha / Hora</th>
+                            <th class="p-4">Producto</th>
                             <th class="p-4">Tipo</th>
                             <th class="p-4">Cantidad</th>
                             <th class="p-4">Responsable</th>
@@ -261,8 +262,6 @@
                 </table>
             </div>
         </div>
-
-    </main>
 
     <!-- MODAL MOVIMIENTO -->
     <div id="modal-movimiento" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
@@ -569,7 +568,7 @@
             tbody.innerHTML = '';
 
             if (!movimientos || movimientos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 text-xs">No hay movimientos registrados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400 text-xs">No hay movimientos registrados.</td></tr>`;
                 return;
             }
 
@@ -579,9 +578,20 @@
                     ? `<span class="bg-emerald-100 text-emerald-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">ENTRADA</span>`
                     : `<span class="bg-rose-100 text-rose-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">SALIDA</span>`;
 
+                const miniatura = m.producto_imagen && m.producto_imagen.trim() !== ""
+                    ? `<img src="${m.producto_imagen}" class="h-9 w-9 object-cover rounded-xl border border-slate-200 shadow-sm" alt="${m.producto_nombre}">`
+                    : `<div class="h-9 w-9 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center text-xs border border-slate-200"><i class="fa-solid fa-box"></i></div>`;
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/80 transition text-xs">
                         <td class="p-4 pl-6 text-slate-500 font-mono font-medium">${fechaStr}</td>
+                        <td class="p-4 flex items-center gap-3">
+                            ${miniatura}
+                            <div>
+                                <p class="font-bold text-slate-800 text-xs">${m.producto_nombre || 'Producto Eliminado'}</p>
+                                <p class="font-mono text-[10px] text-slate-400 font-semibold">${m.producto_sku || 'N/A'}</p>
+                            </div>
+                        </td>
                         <td class="p-4">${tipoBadge}</td>
                         <td class="p-4 font-black text-slate-800">${m.cantidad} unid.</td>
                         <td class="p-4 font-bold text-slate-700">${m.usuario}</td>
