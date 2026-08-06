@@ -1,12 +1,12 @@
 fastapi
 uvicorn
 sqlalchemy
+pg8000
 pydantic
 python-multipart
 aiofiles
 cloudinary
 bcrypt
 pyjwt
-psycopg2-binary
 pandas
 openpyxl
