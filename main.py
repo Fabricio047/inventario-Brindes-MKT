@@ -7,6 +7,7 @@ from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 import bcrypt
 import jwt
 import cloudinary
@@ -15,7 +16,7 @@ import pandas as pd
 
 import models
 import schemas
-from database import engine, get_db
+from database import engine, get_db, SessionLocal
 
 SECRET_KEY = "LG_IMPORTADOS_SECRET_KEY_PROD_2026"
 ALGORITHM = "HS256"
@@ -30,19 +31,18 @@ cloudinary.config(
   secure = True
 )
 
-
+# Crea las tablas si no existen
 models.Base.metadata.create_all(bind=engine)
 
+# Migración ultra segura (Compatible con SQLite y Postgres)
 def aplicar_migraciones():
-    from sqlalchemy import text
-    from database import SessionLocal
     db = SessionLocal()
     try:
-        # Intenta agregar la columna categoria si no existia en la tabla de PostgreSQL
-        db.execute(text("ALTER TABLE productos ADD COLUMN IF NOT EXISTS categoria VARCHAR DEFAULT 'Otros';"))
+        db.execute(text("ALTER TABLE productos ADD COLUMN categoria VARCHAR DEFAULT 'Otros';"))
         db.commit()
     except Exception as e:
-        print(f"Nota migración: {e}")
+        db.rollback()
+        print(f"Nota migración (Columna ya existe o no requerida): {e}")
     finally:
         db.close()
 
@@ -274,11 +274,14 @@ def registrar_movimiento(movimiento: schemas.MovimientoCreate, db: Session = Dep
     elif movimiento.tipo == "SALIDA":
         producto.stock_actual -= movimiento.cantidad
 
+    # Usa el responsable seleccionado en el frontend (Daiana, Julio, etc.) o por defecto el usuario activo
+    responsable = getattr(movimiento, 'usuario', None) or usuario.nombre
+
     nuevo_mov = models.MovimientoInventario(
         producto_id=movimiento.producto_id,
         tipo=movimiento.tipo,
         cantidad=movimiento.cantidad,
-        usuario=usuario.nombre,
+        usuario=responsable,
         notas=movimiento.notas
     )
     db.add(nuevo_mov)
