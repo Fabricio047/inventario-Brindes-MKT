@@ -163,7 +163,7 @@
             </div>
         </div>
 
-        <!-- FORMULARIO REGISTRAR PRODUCTO CON CATEGORÍA Y TECLA ENTER -->
+        <!-- FORMULARIO REGISTRAR PRODUCTO SIN EMOJIS EN CATEGORÍAS -->
         <div id="seccion-crear-producto" class="bg-white p-7 card-depth max-w-2xl mx-auto hidden">
             <h2 class="text-base font-extrabold text-slate-900 mb-5 flex items-center gap-2 tracking-tight">
                 <i class="fa-solid fa-plus-circle text-indigo-600"></i> Registrar Nuevo Producto
@@ -181,12 +181,12 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1.5">Categoría *</label>
                         <select id="categoria" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-medium text-slate-700" onkeydown="enterProximo(event, 'stock')">
-                            <option value="Perfume">🌸 Perfume</option>
-                            <option value="Mini Perfume">✨ Mini Perfume</option>
-                            <option value="Comestible">🍫 Comestible</option>
-                            <option value="Casa y Cocina">🏠 Casa y Cocina</option>
-                            <option value="Brindes/MKT">🎁 Brindes/MKT</option>
-                            <option value="Otros" selected>📦 Otros</option>
+                            <option value="Perfume">Perfume</option>
+                            <option value="Mini Perfume">Mini Perfume</option>
+                            <option value="Comestible">Comestible</option>
+                            <option value="Casa y Cocina">Casa y Cocina</option>
+                            <option value="Brindes/MKT">Brindes/MKT</option>
+                            <option value="Otros" selected>Otros</option>
                         </select>
                     </div>
                 </div>
@@ -219,7 +219,7 @@
             </div>
         </div>
 
-        <!-- TABLA DE PRODUCTOS CON FILTROS POR CATEGORÍA -->
+        <!-- TABLA DE PRODUCTOS CON FILTROS LIMPIOS (SIN EMOJIS) -->
         <div class="bg-white card-depth overflow-hidden">
             <div class="p-6 border-b border-slate-100 flex flex-col lg:flex-row justify-between items-center gap-4">
                 <div>
@@ -230,22 +230,22 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
-                    <!-- FILTRO CATEGORÍA -->
+                    <!-- FILTRO CATEGORÍA SIN EMOJIS -->
                     <select id="filtro-categoria" onchange="filtrarProductos()" class="bg-slate-50 border border-slate-200 text-xs text-slate-700 py-2 px-3 rounded-xl focus:outline-none font-semibold">
                         <option value="TODAS">Todas las Categorías</option>
-                        <option value="Perfume">🌸 Perfume</option>
-                        <option value="Mini Perfume">✨ Mini Perfume</option>
-                        <option value="Comestible">🍫 Comestible</option>
-                        <option value="Casa y Cocina">🏠 Casa y Cocina</option>
-                        <option value="Brindes/MKT">🎁 Brindes/MKT</option>
-                        <option value="Otros">📦 Otros</option>
+                        <option value="Perfume">Perfume</option>
+                        <option value="Mini Perfume">Mini Perfume</option>
+                        <option value="Comestible">Comestible</option>
+                        <option value="Casa y Cocina">Casa y Cocina</option>
+                        <option value="Brindes/MKT">Brindes/MKT</option>
+                        <option value="Otros">Otros</option>
                     </select>
 
                     <select id="filtro-estado" onchange="filtrarProductos()" class="bg-slate-50 border border-slate-200 text-xs text-slate-700 py-2 px-3 rounded-xl focus:outline-none font-semibold">
                         <option value="TODOS">Todos los Estados</option>
-                        <option value="DISPONIBLE">🟢 Disponible</option>
-                        <option value="ALERTA">🟠 Stock Bajo</option>
-                        <option value="AGOTADO">🔴 Sin stock</option>
+                        <option value="DISPONIBLE">Disponible</option>
+                        <option value="ALERTA">Stock Bajo</option>
+                        <option value="AGOTADO">Sin stock</option>
                     </select>
 
                     <div class="relative flex-1 sm:w-56">
@@ -276,7 +276,7 @@
             </div>
         </div>
 
-        <!-- HISTORIAL DE MOVIMIENTOS CON BÚSQUEDA Y EDICIÓN -->
+        <!-- HISTORIAL DE MOVIMIENTOS -->
         <div id="seccion-movimientos-admin" class="bg-white card-depth overflow-hidden hidden">
             <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div>
@@ -286,7 +286,6 @@
                     <p class="text-xs text-slate-400 mt-0.5">Auditoría de Entradas y Salidas</p>
                 </div>
 
-                <!-- BUSCADOR EXCLUSIVO EN MOVIMIENTOS -->
                 <div class="relative w-full sm:w-72">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
                     <input id="input-busqueda-movimientos" oninput="filtrarMovimientos()" type="text" placeholder="Buscar por usuario (ej. Fabricio), producto..." class="w-full bg-slate-50 border border-slate-200 pl-9 pr-3 py-2 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-medium">
@@ -312,7 +311,7 @@
 
     </main>
 
-    <!-- MODAL EDITAR PRODUCTO -->
+    <!-- MODAL EDITAR PRODUCTO SIN EMOJIS -->
     <div id="modal-editar-producto" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
         <div class="bg-white p-7 card-depth w-full max-w-md relative">
             <h3 class="text-lg font-extrabold text-slate-900 mb-5">Editar Producto</h3>
@@ -329,12 +328,12 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1.5">Categoría *</label>
                     <select id="edit-prod-categoria" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm font-semibold">
-                        <option value="Perfume">🌸 Perfume</option>
-                        <option value="Mini Perfume">✨ Mini Perfume</option>
-                        <option value="Comestible">🍫 Comestible</option>
-                        <option value="Casa y Cocina">🏠 Casa y Cocina</option>
-                        <option value="Brindes/MKT">🎁 Brindes/MKT</option>
-                        <option value="Otros">📦 Otros</option>
+                        <option value="Perfume">Perfume</option>
+                        <option value="Mini Perfume">Mini Perfume</option>
+                        <option value="Comestible">Comestible</option>
+                        <option value="Casa y Cocina">Casa y Cocina</option>
+                        <option value="Brindes/MKT">Brindes/MKT</option>
+                        <option value="Otros">Otros</option>
                     </select>
                 </div>
                 <div>
@@ -423,7 +422,6 @@
             ocultarAuth();
         }
 
-        // TECLA ENTER PARA PASAR DE CASILLA EN CASILLA
         function enterProximo(e, siguienteId) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -432,7 +430,6 @@
             }
         }
 
-        // DRAG & DROP
         const dropZone = document.getElementById('drop-zone');
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function(eventName) {
             dropZone.addEventListener(eventName, function(e){ e.preventDefault(); e.stopPropagation(); }, false);
@@ -707,7 +704,6 @@
             });
         }
 
-        // BÚSQUEDA EXCLUSIVA EN MOVIMIENTOS
         function filtrarMovimientos() {
             const texto = document.getElementById('input-busqueda-movimientos').value.toLowerCase().trim();
 
@@ -768,7 +764,6 @@
             });
         }
 
-        // EDICIÓN DE PRODUCTOS
         function abrirModalEditarProd(id) {
             const p = productosGlobales.find(prod => prod.id === id);
             if (!p) return;
@@ -813,7 +808,6 @@
             } catch (e) { alert("Error de red."); }
         }
 
-        // EDICIÓN DE MOVIMIENTOS
         function abrirModalEditarMov(id, cantidad, notas) {
             document.getElementById('edit-mov-id').value = id;
             document.getElementById('edit-mov-cantidad').value = cantidad;
