@@ -323,30 +323,7 @@
         </div>
     </div>
 
-    <!-- MODAL REGISTRAR ENTRADA/SALIDA -->
-    <div id="modal-movimiento" class="fixed inset-0 bg-neutral-950/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-        <div class="bg-white p-5 rounded-lg border border-neutral-200 shadow-2xl w-full max-w-sm">
-            <h3 id="modal-titulo" class="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-3">Registrar Movimiento</h3>
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[11px] font-medium text-neutral-600 mb-1">Responsable</label>
-                    <input id="modal-usuario" type="text" readonly class="w-full h-8 px-2.5 text-xs bg-neutral-100 border border-neutral-200 rounded-md font-medium text-neutral-700">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-medium text-neutral-600 mb-1">Cantidad *</label>
-                    <input id="modal-cantidad" type="number" min="1" value="1" class="trans-fast w-full h-8 px-2.5 text-xs border border-neutral-200 rounded-md font-bold" onkeydown="enterProximo(event, 'modal-notas')">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-medium text-neutral-600 mb-1">Observación</label>
-                    <textarea id="modal-notas" rows="2" placeholder="Motivo o detalle..." class="trans-fast w-full p-2 text-xs border border-neutral-200 rounded-md" onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarMovimiento(); }"></textarea>
-                </div>
-            </div>
-            <div class="mt-4 flex justify-end gap-2">
-                <button onclick="cerrarModal()" class="h-8 px-3 text-xs font-medium text-neutral-600 hover:text-neutral-900">Cancelar</button>
-                <button onclick="confirmarMovimiento()" class="h-8 px-3 text-xs font-medium bg-neutral-900 hover:bg-black text-white rounded-md shadow-sm">Confirmar</button>
-            </div>
-        </div>
-    </div>
+  
 
     <!-- MODAL EDITAR MOVIMIENTO -->
     <div id="modal-editar-movimiento" class="fixed inset-0 bg-neutral-950/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
