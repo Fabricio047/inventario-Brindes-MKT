@@ -31,7 +31,7 @@
             
             <div class="text-center mb-8">
                 <div class="flex justify-center mb-3">
-                    <img id="logo-login" src="https://i.ibb.co/4nZFcSJq/logo.png" alt="LG Importados Logo" class="h-20 object-contain" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x60?text=LG+IMPORTADOS';">
+                    <img id="logo-login" src="https://i.ibb.co/sdvgh1tf/logo.png" alt="LG Importados Logo" class="h-20 object-contain" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x60?text=LG+IMPORTADOS';">
                 </div>
                 <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Gestión de Inventario</h2>
                 <p class="text-xs font-medium text-slate-500 mt-1.5" id="auth-subtitulo">Materiales de Marketing</p>
@@ -43,14 +43,14 @@
                     <label class="block text-xs font-semibold text-slate-600 mb-1.5">Usuario</label>
                     <div class="relative">
                         <i class="fa-regular fa-user absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-                        <input id="login-nombre" type="text" placeholder="Ej. Fabricio" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                        <input id="login-nombre" type="text" placeholder="Ej. Fabricio" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition" onkeydown="enterProximo(event, 'login-pass')">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1.5">Contraseña</label>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-                        <input id="login-pass" type="password" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                        <input id="login-pass" type="password" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition" onkeydown="if(event.key==='Enter') ejecutarLogin()">
                     </div>
                 </div>
                 <button id="btn-login-submit" onclick="ejecutarLogin()" class="w-full bg-slate-900 hover:bg-black text-white font-semibold py-3 rounded-xl text-sm shadow-lg shadow-slate-900/10 transition active:scale-[0.98]">
@@ -69,14 +69,14 @@
                     <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nombre de Usuario</label>
                     <div class="relative">
                         <i class="fa-regular fa-user absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-                        <input id="reg-nombre" type="text" placeholder="Ej. Fabricio" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                        <input id="reg-nombre" type="text" placeholder="Ej. Fabricio" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition" onkeydown="enterProximo(event, 'reg-pass')">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1.5">Contraseña</label>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-                        <input id="reg-pass" type="password" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                        <input id="reg-pass" type="password" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 pl-10 pr-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition" onkeydown="if(event.key==='Enter') ejecutarRegistro()">
                     </div>
                 </div>
                 <button onclick="ejecutarRegistro()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl text-sm shadow-lg shadow-emerald-600/10 transition active:scale-[0.98]">
@@ -96,7 +96,7 @@
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-4 sm:space-x-5">
                 <div class="flex items-center bg-white p-1.5 rounded-2xl shadow-sm">
-                    <img id="logo-header" src="https://i.ibb.co/4nZFcSJq/logo.png" alt="LG Importados Logo" class="h-10 sm:h-12 w-auto object-contain">
+                    <img id="logo-header" src="https://i.ibb.co/sdvgh1tf/logo.png" alt="LG Importados Logo" class="h-10 sm:h-12 w-auto object-contain">
                 </div>
                 <div class="h-8 w-px bg-neutral-800"></div>
                 <div>
@@ -163,42 +163,53 @@
             </div>
         </div>
 
-        <!-- FORMULARIO REGISTRAR PRODUCTO CON DRAG & DROP -->
-        <div id="seccion-crear-producto" class="bg-white p-7 card-depth max-w-xl mx-auto hidden">
+        <!-- FORMULARIO REGISTRAR PRODUCTO CON CATEGORÍA Y TECLA ENTER -->
+        <div id="seccion-crear-producto" class="bg-white p-7 card-depth max-w-2xl mx-auto hidden">
             <h2 class="text-base font-extrabold text-slate-900 mb-5 flex items-center gap-2 tracking-tight">
                 <i class="fa-solid fa-plus-circle text-indigo-600"></i> Registrar Nuevo Producto
             </h2>
             <div class="space-y-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1.5">Código / SKU *</label>
-                        <input id="sku" type="text" placeholder="Ej. PEN-001" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-mono">
+                        <input id="sku" type="text" placeholder="Ej. PER-001" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-mono" onkeydown="enterProximo(event, 'nombre')">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1.5">Nombre del Producto *</label>
-                        <input id="nombre" type="text" placeholder="Ej. Bolígrafo Azul" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                        <input id="nombre" type="text" placeholder="Ej. Perfume LG Gold" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition" onkeydown="enterProximo(event, 'categoria')">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">Categoría *</label>
+                        <select id="categoria" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-medium text-slate-700" onkeydown="enterProximo(event, 'stock')">
+                            <option value="Perfume">🌸 Perfume</option>
+                            <option value="Mini Perfume">✨ Mini Perfume</option>
+                            <option value="Comestible">🍫 Comestible</option>
+                            <option value="Casa y Cocina">🏠 Casa y Cocina</option>
+                            <option value="Brindes/MKT">🎁 Brindes/MKT</option>
+                            <option value="Otros" selected>📦 Otros</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- ZONA DE ARRASTRE DE IMAGEN (DRAG & DROP) -->
+                <!-- DRAG & DROP FOTO -->
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1.5">Foto del Producto</label>
-                    <div id="drop-zone" onclick="document.getElementById('archivo_imagen').click()" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50/50 hover:bg-indigo-50/30 p-6 rounded-2xl text-center cursor-pointer transition flex flex-col items-center justify-center gap-2">
+                    <div id="drop-zone" onclick="document.getElementById('archivo_imagen').click()" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50/50 hover:bg-indigo-50/30 p-5 rounded-2xl text-center cursor-pointer transition flex flex-col items-center justify-center gap-1.5">
                         <i id="drop-icon" class="fa-solid fa-cloud-arrow-up text-2xl text-slate-400"></i>
                         <p id="drop-text" class="text-xs font-semibold text-slate-600">Arrastra una imagen aquí o <span class="text-indigo-600 underline">haz clic para examinar</span></p>
                         <input id="archivo_imagen" type="file" accept="image/*" class="hidden" onchange="mostrarVistaPrevia(this.files[0])">
-                        <img id="preview-img" class="h-24 w-24 object-cover rounded-full shadow-md hidden border-2 border-white mt-1">
+                        <img id="preview-img" class="h-20 w-24 object-cover rounded-xl shadow-md hidden border-2 border-white mt-1">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Inicial</label>
-                        <input id="stock" type="number" placeholder="120" min="0" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-bold">
+                        <input id="stock" type="number" placeholder="10" min="0" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-bold" onkeydown="enterProximo(event, 'minimo')">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Mínimo (Alerta)</label>
-                        <input id="minimo" type="number" placeholder="5" min="0" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-bold">
+                        <input id="minimo" type="number" placeholder="5" min="0" class="w-full bg-slate-50/70 border border-slate-200 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-bold" onkeydown="if(event.key==='Enter') crearProducto()">
                     </div>
                 </div>
 
@@ -208,9 +219,9 @@
             </div>
         </div>
 
-        <!-- TABLA DE PRODUCTOS -->
+        <!-- TABLA DE PRODUCTOS CON FILTROS POR CATEGORÍA -->
         <div class="bg-white card-depth overflow-hidden">
-            <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="p-6 border-b border-slate-100 flex flex-col lg:flex-row justify-between items-center gap-4">
                 <div>
                     <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-boxes-stacked text-slate-900"></i> Inventario de Productos
@@ -218,20 +229,33 @@
                     <p class="text-xs text-slate-400 mt-0.5">Gestión de stock en tiempo real</p>
                 </div>
 
-                <div class="flex items-center gap-3 w-full sm:w-auto">
-                    <button onclick="descargarExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
-                        <i class="fa-solid fa-file-excel text-sm"></i> Exportar Excel
-                    </button>
-                    <div class="relative flex-1 sm:w-64">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
-                        <input id="input-busqueda" oninput="filtrarProductos()" type="text" placeholder="Buscar SKU o Nombre..." class="w-full bg-slate-50 border border-slate-200 pl-9 pr-3 py-2 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
-                    </div>
+                <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+                    <!-- FILTRO CATEGORÍA -->
+                    <select id="filtro-categoria" onchange="filtrarProductos()" class="bg-slate-50 border border-slate-200 text-xs text-slate-700 py-2 px-3 rounded-xl focus:outline-none font-semibold">
+                        <option value="TODAS">Todas las Categorías</option>
+                        <option value="Perfume">🌸 Perfume</option>
+                        <option value="Mini Perfume">✨ Mini Perfume</option>
+                        <option value="Comestible">🍫 Comestible</option>
+                        <option value="Casa y Cocina">🏠 Casa y Cocina</option>
+                        <option value="Brindes/MKT">🎁 Brindes/MKT</option>
+                        <option value="Otros">📦 Otros</option>
+                    </select>
+
                     <select id="filtro-estado" onchange="filtrarProductos()" class="bg-slate-50 border border-slate-200 text-xs text-slate-700 py-2 px-3 rounded-xl focus:outline-none font-semibold">
-                        <option value="TODOS">Todos</option>
+                        <option value="TODOS">Todos los Estados</option>
                         <option value="DISPONIBLE">🟢 Disponible</option>
                         <option value="ALERTA">🟠 Stock Bajo</option>
                         <option value="AGOTADO">🔴 Sin stock</option>
                     </select>
+
+                    <div class="relative flex-1 sm:w-56">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                        <input id="input-busqueda" oninput="filtrarProductos()" type="text" placeholder="Buscar SKU o Nombre..." class="w-full bg-slate-50 border border-slate-200 pl-9 pr-3 py-2 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition">
+                    </div>
+
+                    <button onclick="descargarExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-excel text-sm"></i> Excel
+                    </button>
                 </div>
             </div>
 
@@ -240,10 +264,11 @@
                     <thead>
                         <tr class="bg-slate-50/80 text-slate-400 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100">
                             <th class="p-4 pl-6">Foto</th>
-                            <th class="p-4">Producto</th>
+                            <th class="p-4">Producto / SKU</th>
+                            <th class="p-4">Categoría</th>
                             <th class="p-4">Stock</th>
                             <th class="p-4">Estado</th>
-                            <th class="p-4 text-center pr-6">Acciones / Movimiento</th>
+                            <th class="p-4 text-center pr-6">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-productos" class="divide-y divide-slate-100"></tbody>
@@ -251,14 +276,20 @@
             </div>
         </div>
 
-        <!-- HISTORIAL DE MOVIMIENTOS -->
+        <!-- HISTORIAL DE MOVIMIENTOS CON BÚSQUEDA Y EDICIÓN -->
         <div id="seccion-movimientos-admin" class="bg-white card-depth overflow-hidden hidden">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+            <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div>
                     <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-slate-900"></i> Registro de Movimientos <span class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-md border border-indigo-200">Solo Admin</span>
+                        <i class="fa-solid fa-clock-rotate-left text-slate-900"></i> Registro de Movimientos
                     </h2>
-                    <p class="text-xs text-slate-400 mt-0.5">Historial y edición de auditoría</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Auditoría de Entradas y Salidas</p>
+                </div>
+
+                <!-- BUSCADOR EXCLUSIVO EN MOVIMIENTOS -->
+                <div class="relative w-full sm:w-72">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                    <input id="input-busqueda-movimientos" oninput="filtrarMovimientos()" type="text" placeholder="Buscar por usuario (ej. Fabricio), producto..." class="w-full bg-slate-50 border border-slate-200 pl-9 pr-3 py-2 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:bg-white transition font-medium">
                 </div>
             </div>
             <div class="overflow-x-auto">
@@ -271,7 +302,7 @@
                             <th class="p-4">Cantidad</th>
                             <th class="p-4">Responsable</th>
                             <th class="p-4">Observación</th>
-                            <th class="p-4 text-center pr-6">Acciones</th>
+                            <th class="p-4 text-center pr-6">Editar</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-movimientos" class="divide-y divide-slate-100"></tbody>
@@ -281,7 +312,66 @@
 
     </main>
 
-    <!-- MODAL MOVIMIENTO -->
+    <!-- MODAL EDITAR PRODUCTO -->
+    <div id="modal-editar-producto" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white p-7 card-depth w-full max-w-md relative">
+            <h3 class="text-lg font-extrabold text-slate-900 mb-5">Editar Producto</h3>
+            <input id="edit-prod-id" type="hidden">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Código / SKU *</label>
+                    <input id="edit-prod-sku" type="text" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm font-mono font-bold">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Nombre del Producto *</label>
+                    <input id="edit-prod-nombre" type="text" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm font-bold">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Categoría *</label>
+                    <select id="edit-prod-categoria" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm font-semibold">
+                        <option value="Perfume">🌸 Perfume</option>
+                        <option value="Mini Perfume">✨ Mini Perfume</option>
+                        <option value="Comestible">🍫 Comestible</option>
+                        <option value="Casa y Cocina">🏠 Casa y Cocina</option>
+                        <option value="Brindes/MKT">🎁 Brindes/MKT</option>
+                        <option value="Otros">📦 Otros</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Stock Mínimo (Alerta)</label>
+                    <input id="edit-prod-minimo" type="number" min="0" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm font-bold">
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-2.5">
+                <button onclick="cerrarModalEditarProd()" class="px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition">Cancelar</button>
+                <button onclick="guardarEdicionProducto()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl shadow-md transition">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR MOVIMIENTO -->
+    <div id="modal-editar-movimiento" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white p-7 card-depth w-full max-w-md relative">
+            <h3 class="text-lg font-extrabold text-slate-900 mb-5">Editar Movimiento</h3>
+            <input id="edit-mov-id" type="hidden">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Cantidad *</label>
+                    <input id="edit-mov-cantidad" type="number" min="1" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm font-bold">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Observación / Nota</label>
+                    <textarea id="edit-mov-notas" rows="2" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs"></textarea>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-2.5">
+                <button onclick="cerrarModalEditarMov()" class="px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition">Cancelar</button>
+                <button onclick="guardarEdicionMovimiento()" class="bg-slate-900 hover:bg-black text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl shadow-md transition">Actualizar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL MOVIMIENTO (+ ENTRADA / - SALIDA) -->
     <div id="modal-movimiento" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
         <div class="bg-white p-7 card-depth w-full max-w-md relative">
             <h3 id="modal-titulo" class="text-lg font-extrabold text-slate-900 mb-5">Registrar Movimiento</h3>
@@ -292,21 +382,21 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1.5">Cantidad *</label>
-                    <input id="modal-cantidad" type="number" min="1" value="1" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 font-bold">
+                    <input id="modal-cantidad" type="number" min="1" value="1" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/20 font-bold" onkeydown="enterProximo(event, 'modal-notas')">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1.5">Observación / Motivo</label>
-                    <textarea id="modal-notas" rows="2" placeholder="Ej. Retirado para evento de MKT" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/20"></textarea>
+                    <textarea id="modal-notas" rows="2" placeholder="Ej. Retirado para evento de MKT" class="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/20" onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarMovimiento(); }"></textarea>
                 </div>
             </div>
             <div class="mt-6 flex justify-end gap-2.5">
                 <button onclick="cerrarModal()" class="px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition">Cancelar</button>
-                <button onclick="confirmarMovimiento()" class="bg-slate-900 hover:bg-black text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl shadow-md transition active:scale-[0.98]">Confirmar</button>
+                <button onclick="confirmarMovimiento()" class="bg-slate-900 hover:bg-black text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl shadow-md transition">Confirmar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL ZOOM DE IMAGEN (LIGHTBOX) -->
+    <!-- MODAL ZOOM DE IMAGEN -->
     <div id="modal-zoom-imagen" onclick="cerrarZoomImagen()" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center hidden z-50 p-4 cursor-pointer">
         <div class="relative max-w-3xl max-h-[85vh] p-2 bg-white/10 rounded-3xl border border-white/20 shadow-2xl backdrop-blur-lg flex flex-col items-center">
             <button onclick="cerrarZoomImagen()" class="absolute -top-4 -right-4 bg-white text-slate-900 w-9 h-9 rounded-full font-bold shadow-lg flex items-center justify-center hover:scale-110 transition">
@@ -315,12 +405,13 @@
             <img id="img-zoom-src" src="" class="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-md" alt="Zoom Producto">
             <h4 id="img-zoom-titulo" class="text-white font-bold text-base mt-3 tracking-wide text-center"></h4>
         </div>
-        <p class="text-slate-400 text-xs mt-4 font-semibold"><i class="fa-solid fa-circle-info mr-1"></i> Haz clic en cualquier lugar o presiona Esc para cerrar</p>
+        <p class="text-slate-400 text-xs mt-4 font-semibold"><i class="fa-solid fa-circle-info mr-1"></i> Haz clic en cualquier lugar para cerrar</p>
     </div>
 
     <script>
         const API_URL = "";
         let productosGlobales = [];
+        let movimientosGlobales = [];
         let productoSeleccionadoId = null;
         let tipoMovimientoSeleccionado = null;
         let archivoSeleccionado = null;
@@ -332,16 +423,20 @@
             ocultarAuth();
         }
 
-        const dropZone = document.getElementById('drop-zone');
-        
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function(eventName) {
-            dropZone.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        // TECLA ENTER PARA PASAR DE CASILLA EN CASILLA
+        function enterProximo(e, siguienteId) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const elem = document.getElementById(siguienteId);
+                if (elem) elem.focus();
+            }
         }
+
+        // DRAG & DROP
+        const dropZone = document.getElementById('drop-zone');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function(eventName) {
+            dropZone.addEventListener(eventName, function(e){ e.preventDefault(); e.stopPropagation(); }, false);
+        });
 
         ['dragenter', 'dragover'].forEach(function(eventName) {
             dropZone.addEventListener(eventName, function() { dropZone.classList.add('bg-indigo-100/50', 'border-indigo-600'); }, false);
@@ -375,10 +470,6 @@
                 reader.readAsDataURL(file);
             }
         }
-
-        window.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') cerrarZoomImagen();
-        });
 
         async function fetchAuth(url, options) {
             if (!options) options = {};
@@ -488,7 +579,7 @@
                 });
 
                 if (res.ok) {
-                    alert("¡Operador registrado con éxito! Ahora puedes ingresar con tu nombre de usuario.");
+                    alert("¡Operador registrado con éxito! Ahora puedes iniciar sesión.");
                     mostrarLogin();
                 } else {
                     const err = await res.json();
@@ -519,9 +610,9 @@
             try {
                 const res = await fetchAuth(API_URL + '/api/movimientos');
                 if (res.ok) {
-                    const movimientos = await res.json();
-                    renderizarMovimientos(movimientos);
-                    document.getElementById('kpi-total-movimientos').innerText = movimientos.length;
+                    movimientosGlobales = await res.json();
+                    renderizarMovimientos(movimientosGlobales);
+                    document.getElementById('kpi-total-movimientos').innerText = movimientosGlobales.length;
                 }
             } catch (err) { console.error(err); }
         }
@@ -543,16 +634,20 @@
         function filtrarProductos() {
             const texto = document.getElementById('input-busqueda').value.toLowerCase().trim();
             const filtroEstado = document.getElementById('filtro-estado').value;
+            const filtroCategoria = document.getElementById('filtro-categoria').value;
 
             const resultado = productosGlobales.filter(function(p) {
                 const coincideTexto = p.nombre.toLowerCase().includes(texto) || p.sku.toLowerCase().includes(texto);
                 let coincideEstado = true;
+                let coincideCat = true;
 
                 if (filtroEstado === 'DISPONIBLE') coincideEstado = p.stock_actual > p.stock_minimo;
                 if (filtroEstado === 'ALERTA') coincideEstado = p.stock_actual > 0 && p.stock_actual <= p.stock_minimo;
                 if (filtroEstado === 'AGOTADO') coincideEstado = p.stock_actual === 0;
 
-                return coincideTexto && coincideEstado;
+                if (filtroCategoria !== 'TODAS') coincideCat = (p.categoria === filtroCategoria);
+
+                return coincideTexto && coincideEstado && coincideCat;
             });
 
             renderizarProductos(resultado);
@@ -563,7 +658,7 @@
             tbody.innerHTML = '';
 
             if (!productos || productos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-slate-400 text-xs font-medium">No hay productos en el inventario.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400 text-xs font-medium">No se encontraron productos.</td></tr>';
                 return;
             }
 
@@ -588,7 +683,8 @@
 
                 let botonesAdmin = '';
                 if (esAdmin) {
-                    botonesAdmin = '<button onclick="borrarProducto(' + p.id + ', \'' + p.nombre + '\')" class="text-slate-400 hover:text-rose-600 p-2 rounded-xl transition hover:bg-white shadow-none hover:shadow-sm" title="Borrar Producto"><i class="fa-solid fa-trash-can"></i></button>';
+                    botonesAdmin = '<button onclick="abrirModalEditarProd(' + p.id + ')" class="text-slate-400 hover:text-indigo-600 p-2 rounded-xl transition hover:bg-white shadow-none hover:shadow-sm" title="Editar Producto"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                        '<button onclick="borrarProducto(' + p.id + ', \'' + p.nombre + '\')" class="text-slate-400 hover:text-rose-600 p-2 rounded-xl transition hover:bg-white shadow-none hover:shadow-sm" title="Borrar Producto"><i class="fa-solid fa-trash-can"></i></button>';
                 }
 
                 tbody.innerHTML += '<tr class="hover:bg-slate-50/80 transition items-center">' +
@@ -597,6 +693,7 @@
                         '<p class="font-bold text-slate-900 text-sm tracking-tight">' + p.nombre + '</p>' +
                         '<p class="font-mono text-[11px] text-slate-400 font-medium">' + p.sku + '</p>' +
                     '</td>' +
+                    '<td class="p-4"><span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg border border-slate-200/80">' + (p.categoria || "Otros") + '</span></td>' +
                     '<td class="p-4 font-extrabold text-slate-800 text-base">' + p.stock_actual + '</td>' +
                     '<td class="p-4">' + badgeEstado + '</td>' +
                     '<td class="p-4 text-center pr-6">' +
@@ -610,14 +707,20 @@
             });
         }
 
-        function abrirZoomImagen(url, nombre) {
-            document.getElementById('img-zoom-src').src = url;
-            document.getElementById('img-zoom-titulo').innerText = nombre;
-            document.getElementById('modal-zoom-imagen').classList.remove('hidden');
-        }
+        // BÚSQUEDA EXCLUSIVA EN MOVIMIENTOS
+        function filtrarMovimientos() {
+            const texto = document.getElementById('input-busqueda-movimientos').value.toLowerCase().trim();
 
-        function cerrarZoomImagen() {
-            document.getElementById('modal-zoom-imagen').classList.add('hidden');
+            const resultado = movimientosGlobales.filter(function(m) {
+                const coincideUsuario = m.usuario.toLowerCase().includes(texto);
+                const coincideProducto = (m.producto_nombre || '').toLowerCase().includes(texto) || (m.producto_sku || '').toLowerCase().includes(texto);
+                const coincideTipo = m.tipo.toLowerCase().includes(texto);
+                const coincideNota = (m.notas || '').toLowerCase().includes(texto);
+
+                return coincideUsuario || coincideProducto || coincideTipo || coincideNota;
+            });
+
+            renderizarMovimientos(resultado);
         }
 
         function renderizarMovimientos(movimientos) {
@@ -625,9 +728,11 @@
             tbody.innerHTML = '';
 
             if (!movimientos || movimientos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400 text-xs font-medium">No hay movimientos registrados.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400 text-xs font-medium">No hay registros de movimientos.</td></tr>';
                 return;
             }
+
+            const esAdmin = usuarioSesion && usuarioSesion.rol === 'ADMIN';
 
             movimientos.forEach(function(m) {
                 const fechaStr = m.fecha ? new Date(m.fecha).toLocaleString('es-ES') : '-';
@@ -638,6 +743,11 @@
                 let miniatura = '<div class="h-9 w-9 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center text-xs border border-slate-200"><i class="fa-solid fa-box"></i></div>';
                 if (m.producto_imagen && m.producto_imagen.trim() !== '') {
                     miniatura = '<img src="' + m.producto_imagen + '" class="h-9 w-9 object-cover rounded-full border border-slate-200 shadow-sm" alt="' + m.producto_nombre + '">';
+                }
+
+                let botonEditar = '-';
+                if (esAdmin) {
+                    botonEditar = '<button onclick="abrirModalEditarMov(' + m.id + ', ' + m.cantidad + ', \'' + (m.notas || '') + '\')" class="text-slate-400 hover:text-indigo-600 p-1.5 rounded-lg transition" title="Editar Cantidad/Nota"><i class="fa-solid fa-pen"></i></button>';
                 }
 
                 tbody.innerHTML += '<tr class="hover:bg-slate-50/80 transition text-xs">' +
@@ -651,11 +761,105 @@
                     '</td>' +
                     '<td class="p-4">' + tipoBadge + '</td>' +
                     '<td class="p-4 font-black text-slate-800">' + m.cantidad + ' unid.</td>' +
-                    '<td class="p-4 font-bold text-slate-700">' + m.usuario + '</td>' +
+                    '<td class="p-4 font-bold text-indigo-700 bg-indigo-50/50 rounded-lg px-2 py-1 inline-block mt-2">' + m.usuario + '</td>' +
                     '<td class="p-4 text-slate-500">' + (m.notas || '-') + '</td>' +
-                    '<td class="p-4 text-center pr-6">-</td>' +
+                    '<td class="p-4 text-center pr-6">' + botonEditar + '</td>' +
                 '</tr>';
             });
+        }
+
+        // EDICIÓN DE PRODUCTOS
+        function abrirModalEditarProd(id) {
+            const p = productosGlobales.find(prod => prod.id === id);
+            if (!p) return;
+            document.getElementById('edit-prod-id').value = p.id;
+            document.getElementById('edit-prod-sku').value = p.sku;
+            document.getElementById('edit-prod-nombre').value = p.nombre;
+            document.getElementById('edit-prod-categoria').value = p.categoria || "Otros";
+            document.getElementById('edit-prod-minimo').value = p.stock_minimo;
+            document.getElementById('modal-editar-producto').classList.remove('hidden');
+        }
+
+        function cerrarModalEditarProd() {
+            document.getElementById('modal-editar-producto').classList.add('hidden');
+        }
+
+        async function guardarEdicionProducto() {
+            const id = document.getElementById('edit-prod-id').value;
+            const sku = document.getElementById('edit-prod-sku').value.trim();
+            const nombre = document.getElementById('edit-prod-nombre').value.trim();
+            const categoria = document.getElementById('edit-prod-categoria').value;
+            const minimo = parseInt(document.getElementById('edit-prod-minimo').value) || 0;
+
+            if (!sku || !nombre) {
+                alert("Completa el Código / SKU y el Nombre.");
+                return;
+            }
+
+            try {
+                const res = await fetchAuth(API_URL + '/api/productos/' + id, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ sku: sku, nombre: nombre, categoria: categoria, stock_minimo: minimo })
+                });
+
+                if (res.ok) {
+                    cerrarModalEditarProd();
+                    await cargarTodo();
+                } else {
+                    const err = await res.json();
+                    alert("Error: " + (err.detail || "No se pudo actualizar."));
+                }
+            } catch (e) { alert("Error de red."); }
+        }
+
+        // EDICIÓN DE MOVIMIENTOS
+        function abrirModalEditarMov(id, cantidad, notas) {
+            document.getElementById('edit-mov-id').value = id;
+            document.getElementById('edit-mov-cantidad').value = cantidad;
+            document.getElementById('edit-mov-notas').value = notas;
+            document.getElementById('modal-editar-movimiento').classList.remove('hidden');
+        }
+
+        function cerrarModalEditarMov() {
+            document.getElementById('modal-editar-movimiento').classList.add('hidden');
+        }
+
+        async function guardarEdicionMovimiento() {
+            const id = document.getElementById('edit-mov-id').value;
+            const cantidad = parseInt(document.getElementById('edit-mov-cantidad').value);
+            const notas = document.getElementById('edit-mov-notas').value.trim();
+
+            if (isNaN(cantidad) || cantidad <= 0) {
+                alert("Ingresa una cantidad válida mayor a cero.");
+                return;
+            }
+
+            try {
+                const res = await fetchAuth(API_URL + '/api/movimientos/' + id, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ cantidad: cantidad, notas: notas })
+                });
+
+                if (res.ok) {
+                    cerrarModalEditarMov();
+                    await cargarTodo();
+                } else {
+                    const err = await res.json();
+                    alert("Error: " + (err.detail || "No se pudo actualizar el movimiento."));
+                }
+            } catch (e) { alert("Error de red."); }
+        }
+
+        function abrirZoomImagen(url, nombre) {
+            document.getElementById('img-zoom-src').src = url;
+            document.getElementById('img-zoom-titulo').innerText = nombre;
+            document.getElementById('modal-zoom-imagen').classList.remove('hidden');
+        }
+
+        function cerrarZoomImagen() {
+            document.getElementById('modal-zoom-imagen').classList.add('hidden');
         }
 
         function abrirModal(id, tipo) {
@@ -707,6 +911,7 @@
         async function crearProducto() {
             const sku = document.getElementById('sku').value.trim();
             const nombre = document.getElementById('nombre').value.trim();
+            const categoria = document.getElementById('categoria').value;
             const stock_inicial = parseInt(document.getElementById('stock').value) || 0;
             const stock_minimo = parseInt(document.getElementById('minimo').value) || 0;
             const inputArchivo = document.getElementById('archivo_imagen');
@@ -719,7 +924,7 @@
 
             const btnGuardar = document.getElementById('btn-guardar-prod');
             btnGuardar.disabled = true;
-            btnGuardar.innerText = "Subiendo foto y guardando...";
+            btnGuardar.innerText = "Guardando...";
 
             try {
                 const archivoASubir = archivoSeleccionado || (inputArchivo.files.length > 0 ? inputArchivo.files[0] : null);
@@ -736,15 +941,13 @@
                     if (uploadRes.ok) {
                         const uploadData = await uploadRes.json();
                         imagen_url = uploadData.imagen_url;
-                    } else {
-                        alert("Advertencia: No se pudo subir la foto.");
                     }
                 }
 
                 const res = await fetchAuth(API_URL + '/api/productos', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ sku: sku, nombre: nombre, imagen_url: imagen_url, stock_inicial: stock_inicial, stock_minimo: stock_minimo })
+                    body: JSON.stringify({ sku: sku, nombre: nombre, categoria: categoria, imagen_url: imagen_url, stock_inicial: stock_inicial, stock_minimo: stock_minimo })
                 });
 
                 if (res.ok) {
@@ -779,13 +982,11 @@
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'Inventario_Brindes_MKT.xlsx';
+                    a.download = 'Inventario_Stock_MKT.xlsx';
                     document.body.appendChild(a);
                     a.click();
                     a.remove();
-                } else {
-                    alert("No se pudo generar el reporte.");
-                }
+                } else { alert("No se pudo generar el reporte."); }
             } catch (e) { alert("Error al descargar el Excel."); }
         }
 
@@ -793,10 +994,9 @@
             if (confirm('¿Deseas eliminar "' + nombre + '"?')) {
                 try {
                     const res = await fetchAuth(API_URL + '/api/productos/' + id, { method: 'DELETE' });
-                    if (res.ok) {
-                        await cargarTodo();
-                    } else { alert("No se pudo eliminar."); }
-                } catch (e) { alert("Error al intentar eliminar."); }
+                    if (res.ok) { await cargarTodo(); } 
+                    else { alert("No se pudo eliminar."); }
+                } catch (e) { alert("Error al eliminar."); }
             }
         }
     </script>
