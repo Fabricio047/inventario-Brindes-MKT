@@ -30,7 +30,23 @@ cloudinary.config(
   secure = True
 )
 
+
 models.Base.metadata.create_all(bind=engine)
+
+def aplicar_migraciones():
+    from sqlalchemy import text
+    from database import SessionLocal
+    db = SessionLocal()
+    try:
+        # Intenta agregar la columna categoria si no existia en la tabla de PostgreSQL
+        db.execute(text("ALTER TABLE productos ADD COLUMN IF NOT EXISTS categoria VARCHAR DEFAULT 'Otros';"))
+        db.commit()
+    except Exception as e:
+        print(f"Nota migración: {e}")
+    finally:
+        db.close()
+
+aplicar_migraciones()
 
 app = FastAPI(title="Control de Stock - MKT")
 
