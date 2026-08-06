@@ -720,26 +720,39 @@
 
         function cerrarModal() { document.getElementById('modal-movimiento').classList.add('hidden'); }
 
-        async function confirmarMovimiento() {
+     async function confirmarMovimiento() {
             const cantidadInput = parseInt(document.getElementById('modal-cantidad').value);
             const notasInput = document.getElementById('modal-notas').value.trim();
-            if (isNaN(cantidadInput) || cantidadInput <= 0) return alert("Ingresa una cantidad válida.");
+            const usuarioSeleccionado = document.getElementById('modal-usuario').value;
+
+            if (isNaN(cantidadInput) || cantidadInput <= 0) {
+                return alert("Ingresa una cantidad válida mayor a 0.");
+            }
 
             try {
                 const res = await fetchAuth(API_URL + '/api/movimientos', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         producto_id: productoSeleccionadoId,
                         tipo: tipoMovimientoSeleccionado,
                         cantidad: cantidadInput,
-                        usuario: usuarioSesion.nombre,
+                        usuario: usuarioSeleccionado,
                         notas: notasInput
                     })
                 });
-                if (res.ok) { cerrarModal(); await cargarTodo(); }
-                else { const err = await res.json(); alert(err.detail || "Error en movimiento."); }
-            } catch (error) { alert("Error de conexión."); }
+
+                if (res.ok) { 
+                    cerrarModal(); 
+                    await cargarTodo(); 
+                } else { 
+                    const err = await res.json(); 
+                    alert(err.detail || "No se pudo registrar el movimiento."); 
+                }
+            } catch (error) { 
+                console.error("Error al registrar movimiento:", error);
+                alert("Error de conexión con el servidor."); 
+            }
         }
 
         async function crearProducto() {
