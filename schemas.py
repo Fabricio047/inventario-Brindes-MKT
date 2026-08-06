@@ -22,9 +22,9 @@ class LoginRequest(BaseModel):
 class ProductoBase(BaseModel):
     sku: str
     nombre: str
+    categoria: Optional[str] = "Otros"
     descripcion: Optional[str] = None
     imagen_url: Optional[str] = None
-    categoria_id: Optional[int] = None
     stock_minimo: int = 5
 
 class ProductoCreate(ProductoBase):
@@ -33,6 +33,7 @@ class ProductoCreate(ProductoBase):
 class ProductoUpdate(BaseModel):
     sku: str
     nombre: str
+    categoria: Optional[str] = "Otros"
     imagen_url: Optional[str] = None
     stock_minimo: int
 
@@ -53,7 +54,6 @@ class MovimientoCreate(BaseModel):
 
 class MovimientoUpdate(BaseModel):
     cantidad: Optional[int] = None
-    usuario: Optional[str] = None
     notas: Optional[str] = None
 
 class MovimientoOut(BaseModel):
