@@ -710,23 +710,28 @@
 
         function abrirModal(id, tipo) {
             productoSeleccionadoId = id;
-            tipoMovimientoSeleccionado = tipo;
+            tipoMovimientoSeleccionado = tipo; // Define si es ENTRADA o SALIDA
             document.getElementById('modal-titulo').innerText = 'Registrar ' + tipo;
-            document.getElementById('modal-usuario').value = usuarioSesion.nombre;
             document.getElementById('modal-cantidad').value = 1;
             document.getElementById('modal-notas').value = '';
             document.getElementById('modal-movimiento').classList.remove('hidden');
         }
 
-        function cerrarModal() { document.getElementById('modal-movimiento').classList.add('hidden'); }
+        function cerrarModal() { 
+            document.getElementById('modal-movimiento').classList.add('hidden'); 
+        }
 
-     async function confirmarMovimiento() {
+        async function confirmarMovimiento() {
             const cantidadInput = parseInt(document.getElementById('modal-cantidad').value);
             const notasInput = document.getElementById('modal-notas').value.trim();
             const usuarioSeleccionado = document.getElementById('modal-usuario').value;
 
             if (isNaN(cantidadInput) || cantidadInput <= 0) {
                 return alert("Ingresa una cantidad válida mayor a 0.");
+            }
+
+            if (!productoSeleccionadoId || !tipoMovimientoSeleccionado) {
+                return alert("Error al identificar el producto o tipo de movimiento.");
             }
 
             try {
