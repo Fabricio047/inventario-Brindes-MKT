@@ -56,7 +56,7 @@ def crear_token_acceso(data: dict, expires_delta: Optional[timedelta] = None):
 def obtener_usuario_actual(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     exception_unauthorized = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Sesión inválida o expirada. Por favor inicie sesión de nuevo.",
+        detail="Sesión inválida o expirada.",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
@@ -76,7 +76,7 @@ def verificar_admin(usuario_actual: models.Usuario = Depends(obtener_usuario_act
     if usuario_actual.rol != "ADMIN":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Acceso denegado: Se requieren permisos de Administrador."
+            detail="Se requieren permisos de Administrador."
         )
     return usuario_actual
 
@@ -112,7 +112,7 @@ def leer_frontend():
     ruta_html = os.path.join(os.path.dirname(__file__), "index.html")
     if os.path.exists(ruta_html):
         return FileResponse(ruta_html)
-    return HTMLResponse("<h2>Error: No se encontró index.html en el servidor.</h2>")
+    return HTMLResponse("<h2>Error: No se encontró index.html</h2>")
 
 @app.post("/api/upload")
 async def subir_imagen(file: UploadFile = File(...), admin: models.Usuario = Depends(verificar_admin)):
@@ -122,18 +122,18 @@ async def subir_imagen(file: UploadFile = File(...), admin: models.Usuario = Dep
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al subir imagen: {str(e)}")
 
-# --- REGISTRO Y LOGIN SÓLO CON NOMBRE ---
+# --- AUTENTICACIÓN ---
 
 @app.post("/api/registro", response_model=schemas.UsuarioOut, status_code=status.HTTP_201_CREATED)
 def registrar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
-    nombre_limpio = usuario.nombre.strip().lower()
+    nombre_limpio = usuario.nombre.strip()
     db_user = db.query(models.Usuario).filter(models.Usuario.nombre.ilike(nombre_limpio)).first()
     if db_user:
-        raise HTTPException(status_code=400, detail="Este nombre de usuario ya está registrado.")
+        raise HTTPException(status_code=400, detail="Este nombre de usuario ya existe.")
     
     nuevo_usuario = models.Usuario(
-        nombre=usuario.nombre.strip(),
-        email=f"{nombre_limpio}@local.com",
+        nombre=nombre_limpio,
+        email=f"{nombre_limpio.lower()}@local.com",
         password=obtener_password_hash(usuario.password),
         rol="OPERADOR"
     )
@@ -182,9 +182,9 @@ def crear_producto(producto: schemas.ProductoCreate, db: Session = Depends(get_d
     nuevo_producto = models.Producto(
         sku=producto.sku,
         nombre=producto.nombre,
+        categoria=producto.categoria or "Otros",
         descripcion=producto.descripcion,
         imagen_url=producto.imagen_url,
-        categoria_id=producto.categoria_id,
         stock_actual=producto.stock_inicial,
         stock_minimo=producto.stock_minimo
     )
@@ -204,7 +204,9 @@ def editar_producto(producto_id: int, datos: schemas.ProductoUpdate, db: Session
     
     prod.sku = datos.sku
     prod.nombre = datos.nombre
-    prod.imagen_url = datos.imagen_url
+    prod.categoria = datos.categoria or "Otros"
+    if datos.imagen_url is not None and datos.imagen_url != "":
+        prod.imagen_url = datos.imagen_url
     prod.stock_minimo = datos.stock_minimo
     db.commit()
     db.refresh(prod)
@@ -228,7 +230,7 @@ def eliminar_producto(producto_id: int, db: Session = Depends(get_db), admin: mo
 
 @app.get("/api/movimientos", response_model=List[schemas.MovimientoOut])
 def obtener_movimientos(db: Session = Depends(get_db), admin: models.Usuario = Depends(verificar_admin)):
-    movimientos = db.query(models.MovimientoInventario).order_by(models.MovimientoInventario.fecha.desc()).limit(50).all()
+    movimientos = db.query(models.MovimientoInventario).order_by(models.MovimientoInventario.fecha.desc()).limit(100).all()
     resultado = []
     for mov in movimientos:
         mov_dict = schemas.MovimientoOut.model_validate(mov)
@@ -267,6 +269,28 @@ def registrar_movimiento(movimiento: schemas.MovimientoCreate, db: Session = Dep
     db.commit()
     return {"mensaje": "Movimiento registrado", "nuevo_stock": producto.stock_actual}
 
+@app.put("/api/movimientos/{movimiento_id}")
+def editar_movimiento(movimiento_id: int, datos: schemas.MovimientoUpdate, db: Session = Depends(get_db), admin: models.Usuario = Depends(verificar_admin)):
+    mov = db.query(models.MovimientoInventario).filter(models.MovimientoInventario.id == movimiento_id).first()
+    if not mov:
+        raise HTTPException(status_code=404, detail="Movimiento no encontrado.")
+    
+    if datos.notas is not None:
+        mov.notas = datos.notas
+    
+    if datos.cantidad is not None and datos.cantidad != mov.cantidad:
+        prod = db.query(models.Producto).filter(models.Producto.id == mov.producto_id).first()
+        if prod:
+            diferencia = datos.cantidad - mov.cantidad
+            if mov.tipo == "ENTRADA":
+                prod.stock_actual += diferencia
+            elif mov.tipo == "SALIDA":
+                prod.stock_actual -= diferencia
+            mov.cantidad = datos.cantidad
+
+    db.commit()
+    return {"mensaje": "Movimiento actualizado correctamente"}
+
 # --- EXPORTAR EXCEL ---
 
 @app.get("/api/reportes/excel")
@@ -278,6 +302,7 @@ def descargar_reporte_excel(db: Session = Depends(get_db), usuario: models.Usuar
         data.append({
             "Código / SKU": p.sku,
             "Producto": p.nombre,
+            "Categoría": p.categoria or "Otros",
             "Stock Actual": p.stock_actual,
             "Stock Mínimo": p.stock_minimo,
             "Estado Stock": "ALERTA - BAJO" if p.stock_actual <= p.stock_minimo else "NORMAL",
@@ -288,8 +313,8 @@ def descargar_reporte_excel(db: Session = Depends(get_db), usuario: models.Usuar
     
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='Inventario Brindes')
+        df.to_excel(writer, index=False, sheet_name='Inventario Stock MKT')
     output.seek(0)
     
-    headers = {'Content-Disposition': 'attachment; filename="Inventario_Brindes_MKT.xlsx"'}
+    headers = {'Content-Disposition': 'attachment; filename="Inventario_Stock_MKT.xlsx"'}
     return StreamingResponse(output, headers=headers, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
